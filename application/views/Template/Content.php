@@ -48,61 +48,52 @@
         <div class="sidebar-brand-text mx-3">Apotek <sup>v 0.1</sup></div>
       </a>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Interface
-      </div>
-
-      <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-cog"></i>
-          <span>Components</span>
-        </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Components:</h6>
-            <a class="collapse-item" href="buttons.html">Buttons</a>
-            <a class="collapse-item" href="cards.html">Cards</a>
-          </div>
-        </div>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Addons
-      </div>
-
-      <!-- Nav Item - Charts -->
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-
-      <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
+      <?php
+      $modul = $this->db->get("m_modul")->result();
+      foreach ($modul as $mo) :
+        if ($mo->nama == '') {
+          $devider = "my-0";
+        } else {
+          $devider = "";
+        }
+        echo '<hr class="sidebar-divider ' . $devider . '">';
+        echo '<div class="sidebar-heading">
+          ' . $mo->nama . '
+        </div>';
+        $menu = $this->db->get_where("menu", ["id_modul" => $mo->id])->result();
+        foreach ($menu as $me) :
+          $param_menu1 = $this->uri->segment(1);
+          if ($param_menu1 == $me->url) {
+            $active_menu = "active";
+          } else {
+            $active_menu = "";
+          }
+          echo '<li class="nav-item ' . $active_menu . '">';
+          $cek_sub_menu = $this->db->query("SELECT * FROM sub_menu WHERE url LIKE '%$me->url%'")->num_rows();
+          if ($cek_sub_menu > 0) {
+            $sub_menu = $this->db->get_where("sub_menu", ["id_menu" => $me->id])->result();
+            $no = 1;
+            echo '<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse' . $me->nama . '" aria-expanded="true" aria-controls="collapsePages">
+                ' . $me->ikon . ' <span>' . $me->nama . '</span>
+              </a>';
+            echo '<div id="collapse' . $me->nama . '" class="collapse" aria-labelledby="heading' . $me->nama . '" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">' . $me->nama . ':</h6>';
+            foreach ($sub_menu as $sm) {
+              echo '<a class="collapse-item" type="button" onclick="get_menu(' . "'" . $sm->url . "'" . ')">' . $sm->nama . '</a>';
+              $no++;
+            }
+            echo '</div>
+            </div>';
+          } else {
+            echo '<a class="nav-link" type="button" onclick="get_menu(' . "'" . $me->url . "'" . ')">
+              ' . $me->ikon . ' <span>' . $me->nama . '</span>
+            </a>';
+          }
+          echo '</li>';
+      ?>
+        <?php endforeach; ?>
+      <?php endforeach; ?>
 
     </ul>
     <!-- End of Sidebar -->
@@ -367,6 +358,11 @@
 
     function home() {
       location.href = siteUrl + 'Dashboard';
+    }
+
+    function get_menu(menu) {
+      alert(menu)
+      location.href = siteUrl + menu;
     }
   </script>
 
