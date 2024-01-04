@@ -64,7 +64,7 @@
                     </div>
                   </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-block" onclick="daftarkan()">
+                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="daftarkan()">
                   Daftar
                 </button>
                 <hr>

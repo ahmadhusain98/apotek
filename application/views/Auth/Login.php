@@ -25,12 +25,19 @@
                     <option value="">-- Cabang --</option>
                   </select>
                 </div>
-                <button type="button" class="btn btn-primary btn-block">
+                <button type="button" class="btn btn-primary btn-block btn-sm">
                   Masuk
                 </button>
                 <hr>
                 <div class="text-center">
-                  <a class="small" href="<?= site_url() ?>Auth/regist">Belum Punya Akun!</a>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <a class="small" type="button" onclick="ajukan()">Minta Aktivasi!</a>
+                    </div>
+                    <div class="col-md-6">
+                      <a class="small" href="<?= site_url() ?>Auth/regist">Belum Punya Akun!</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -43,5 +50,89 @@
   </div>
 </form>
 
+<div class="modal fade" id="mAktivasi" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ajukan Aktivasi Akun</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="userakifasi" id="userakifasi" class="form-control" placeholder="Username..." title="Username">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="ajukan_proses()">Ajukan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  var userakifasi = $('#userakifasi');
+  var username = $('#username');
+  var password = $('#password');
+  const siteUrl = '<?= site_url() ?>';
+
+  function ajukan() {
+    $('#mAktivasi').modal('show');
+  }
+
+  function ajukan_proses() {
+    $('#mAktivasi').modal('hide');
+
+    if (userakifasi.val() == '' || userakifasi.val() == null) {
+      Swal.fire({
+        title: 'Username',
+        text: 'Tidak boleh kosong',
+        icon: 'error'
+      });
+      return;
+    }
+
+    $.ajax({
+      url: siteUrl + 'Auth/ajukan_aktivasi/' + userakifasi.val(),
+      type: 'POST',
+      dataType: 'JSON',
+      success: function(result) {
+        if (result == '' || result == null) {
+          Swal.fire({
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
+            icon: 'error'
+          }).then((result) => {
+            $('#mAktivasi').modal('show');
+          });
+        } else {
+          if (result.response == 0) {
+            Swal.fire({
+              title: 'Akun ' + userakifasi.val(),
+              text: 'Gagak diajukan aktivasi, username tidak ditemukan!',
+              icon: 'error'
+            }).then((result) => {
+              $('#mAktivasi').modal('show');
+            });
+          } else if (result.response == 1) {
+            Swal.fire({
+              title: 'Akun ' + userakifasi.val(),
+              text: 'Berhasil diajukan aktivasi, mohon di tunggu untuk proses aktivasi!',
+              icon: 'success'
+            }).then((result) => {
+              location.href = siteUrl + 'Auth';
+            });
+          } else {
+            Swal.fire({
+              title: 'Akun ' + userakifasi.val(),
+              text: 'Gagak diajukan aktivasi!',
+              icon: 'warning'
+            }).then((result) => {
+              $('#mAktivasi').modal('show');
+            });
+          }
+        }
+      }
+    })
+  }
 </script>

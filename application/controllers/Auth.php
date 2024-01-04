@@ -69,4 +69,31 @@ class Auth extends CI_Controller
       echo json_encode(['response' => 0]);
     }
   }
+
+  public function ajukan_aktivasi($username)
+  {
+    $cekuser = $this->M_central->jumdata('user', ['username' => $username]);
+    if ($cekuser < 1) {
+      echo json_encode(['response' => 0]);
+    } else {
+      $cekaktivasi = $this->M_central->jumdata('user_aktivasi', ['username' => $username]);
+
+      $data = [
+        'username' => $username,
+        'aktivasi' => 1,
+      ];
+
+      if ($cekaktivasi < 1) {
+        $cek = $this->M_central->simpanData('user_aktivasi', $data);
+      } else {
+        $cek = $this->M_central->updateData('user_aktivasi', $data, ['username' => $username]);
+      }
+
+      if ($cek) {
+        echo json_encode(['response' => 1]);
+      } else {
+        echo json_encode(['response' => 2]);
+      }
+    }
+  }
 }
