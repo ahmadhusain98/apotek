@@ -10,4 +10,14 @@ class M_central extends CI_Model
   {
     return $this->db->insert($table, $data);
   }
+
+  function getDataRow($table, $data)
+  {
+    return $this->db->get_where($table, $data)->row();
+  }
+
+  function updateData($table, $data, $where)
+  {
+    return $this->db->update($table, $data, $where);
+  }
 }

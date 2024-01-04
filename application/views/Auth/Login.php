@@ -1,4 +1,4 @@
-<form class="user">
+<form class="user" method="post" id="formLogin">
   <!-- Outer Row -->
   <div class="row justify-content-center">
 
@@ -25,7 +25,7 @@
                     <option value="">-- Cabang --</option>
                   </select>
                 </div>
-                <button type="button" class="btn btn-primary btn-block btn-sm">
+                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="login_proses()">
                   Masuk
                 </button>
                 <hr>
@@ -75,6 +75,7 @@
   var username = $('#username');
   var password = $('#password');
   const siteUrl = '<?= site_url() ?>';
+  const form = $('#formLogin');
 
   function ajukan() {
     $('#mAktivasi').modal('show');
@@ -131,6 +132,60 @@
               $('#mAktivasi').modal('show');
             });
           }
+        }
+      }
+    })
+  }
+
+  function login_proses() {
+    if (username.val() == '' || username.val() == null) {
+      Swal.fire({
+        title: 'Username',
+        text: 'Tidak boleh kosong',
+        icon: 'error'
+      });
+      return;
+    }
+
+    if (password.val() == '' || password.val() == null) {
+      Swal.fire({
+        title: 'Password',
+        text: 'Tidak boleh kosong',
+        icon: 'error'
+      });
+      return;
+    }
+
+    // cek user
+    $.ajax({
+      url: siteUrl + 'Auth/cek_user/',
+      type: 'POST',
+      data: form.serialize(),
+      dataType: 'JSON',
+      success: function(result) {
+        if (result == '' || result == null) {
+          Swal.fire({
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
+            icon: 'error'
+          });
+          return;
+        } else if (result.response == 0) {
+          Swal.fire({
+            title: 'Akun ' + username.val(),
+            text: 'Tidak ditemukan, silahkan mendaftar!',
+            icon: 'error'
+          }).then((result) => {
+            location.href = siteUrl + 'Auth';
+          });
+        } else if (result.response == 1) {
+          location.href = siteUrl + 'Dashboard';
+        } else {
+          Swal.fire({
+            title: 'Akun ' + username.val(),
+            text: 'Gagal masuk, password berbeda!',
+            icon: 'error'
+          });
         }
       }
     })
