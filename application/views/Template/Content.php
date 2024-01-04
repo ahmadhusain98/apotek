@@ -30,6 +30,9 @@
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+  <!-- Custom styles for this page -->
+  <link href="<?= base_url() ?>assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -312,16 +315,6 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="<?= base_url() ?>assets/vendor/jquery/jquery.min.js"></script>
-  <script src="<?= base_url() ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="<?= base_url() ?>assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="<?= base_url() ?>assets/js/sb-admin-2.min.js"></script>
-
   <script>
     const siteUrl = '<?= site_url() ?>';
 
@@ -374,6 +367,85 @@
         }
       });
     }
+  </script>
+
+  <!-- Page level plugins -->
+  <script src="<?= base_url() ?>assets/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="<?= base_url() ?>assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="<?= base_url() ?>assets/js/demo/datatables-demo.js"></script>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="<?= base_url() ?>assets/vendor/jquery/jquery.min.js"></script>
+  <script src="<?= base_url() ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="<?= base_url() ?>assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="<?= base_url() ?>assets/js/sb-admin-2.min.js"></script>
+
+  <script>
+    table.DataTable({
+      paging: true,
+      processing: true,
+      responsive: true,
+      oLanguage: {
+        sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
+        sInfoEmpty: "",
+        sInfoFiltered: "Dipilih dari _TOTAL_ data",
+        sSearch: "<span>Cari : </span>",
+        sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
+        sLengthMenu: "<span>_MENU_ Baris</span>",
+        sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
+        oPaginate: {
+          sPrevious: "Sebelumnya",
+          sNext: "Berikutnya"
+        }
+      },
+      aLengthMenu: [
+        [5, 15, 40, -1],
+        [5, 15, 40, "Semua"]
+      ],
+      columnDefs: [{
+        targets: [-1],
+        orderable: false,
+      }, ],
+    });
+    // table.DataTable({
+    //   paging: true,
+    //   destroy: true,
+    //   processing: true,
+    //   responsive: true,
+    //   serverSide: true,
+    //   order: [],
+    //   ajax: {
+    //     url: "<?= site_url() . $this->data['list_ajax'] ?>",
+    //     type: "POST"
+    //   },
+    //   oLanguage: {
+    //     sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
+    //     sInfoEmpty: "",
+    //     sInfoFiltered: "Dipilih dari _TOTAL_ data",
+    //     sSearch: "<span>Cari : </span>",
+    //     sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
+    //     sLengthMenu: "<span>_MENU_ Baris</span>",
+    //     sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
+    //     oPaginate: {
+    //       sPrevious: "Sebelumnya",
+    //       sNext: "Berikutnya"
+    //     }
+    //   },
+    //   aLengthMenu: [
+    //     [5, 15, 40, -1],
+    //     [5, 15, 40, "Semua"]
+    //   ],
+    //   columnDefs: [{
+    //     targets: [-1],
+    //     orderable: false,
+    //   }, ],
+    // });
   </script>
 
 </body>
