@@ -64,8 +64,12 @@
                     </div>
                   </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="daftarkan()">
+                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="daftarkan()" id="btnShow">
                   Daftar
+                </button>
+                <button class="btn btn-primary btn-block btn-sm" type="button" disabled id="btnHide">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Mohon ditunggu...
                 </button>
                 <hr>
                 <div class="text-center">
@@ -94,6 +98,13 @@
 
   const siteUrl = '<?= site_url() ?>';
   const form = $('#formRegist');
+
+  var btnShow = $('#btnShow');
+  var btnHide = $('#btnHide');
+
+  $(document).ready(function() {
+    btnHide.hide();
+  });
 
   function cekUsername(param) {
     if (param == '' || param == null) {} else {
@@ -125,7 +136,13 @@
   }
 
   function daftarkan() {
+    btnHide.show();
+    btnShow.hide();
+
     if (nama.val() == '' || nama.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Nama',
         text: 'Tidak boleh kosong',
@@ -135,6 +152,9 @@
     }
 
     if (username.val() == '' || username.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Username',
         text: 'Tidak boleh kosong',
@@ -144,6 +164,9 @@
     }
 
     if (password.val() == '' || password.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Sandi',
         text: 'Tidak boleh kosong',
@@ -153,6 +176,9 @@
     }
 
     if (nohp.val() == '' || nohp.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Nomor Hp',
         text: 'Tidak boleh kosong',
@@ -162,6 +188,9 @@
     }
 
     if (email.val() == '' || email.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Email',
         text: 'Tidak boleh kosong',
@@ -171,6 +200,9 @@
     }
 
     if (tempat_lahir.val() == '' || tempat_lahir.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Tempat Lahir',
         text: 'Tidak boleh kosong',
@@ -180,6 +212,9 @@
     }
 
     if (tgl_lahir.val() == '' || tgl_lahir.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Tanggal Lahir',
         text: 'Tidak boleh kosong',
@@ -189,6 +224,9 @@
     }
 
     if (alamat.val() == '' || alamat.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Alamat',
         text: 'Tidak boleh kosong',
@@ -204,6 +242,9 @@
       dataType: 'JSON',
       success: function(result) {
         if (result == '' || result == null) {
+          btnHide.hide();
+          btnShow.show();
+
           Swal.fire({
             title: '404',
             text: 'Tidak ada respons dari sistem',
@@ -212,6 +253,9 @@
           return;
         } else {
           if (result.response == 1) {
+            btnHide.hide();
+            btnShow.show();
+
             Swal.fire({
               title: 'Akun ' + username.val(),
               text: 'Berhasil didaftarkan, silahkan ajukan aktivasi!',
@@ -220,6 +264,9 @@
               location.href = siteUrl + 'Auth';
             });
           } else {
+            btnHide.hide();
+            btnShow.show();
+
             Swal.fire({
               title: 'Akun ' + username.val(),
               text: 'Gagak didaftarkan, silahkan coba lagi!',

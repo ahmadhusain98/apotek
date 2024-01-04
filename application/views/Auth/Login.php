@@ -25,8 +25,12 @@
                     <option value="">-- Cabang --</option>
                   </select>
                 </div>
-                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="login_proses()">
+                <button type="button" class="btn btn-primary btn-block btn-sm" onclick="login_proses()" id="btnShow">
                   Masuk
+                </button>
+                <button class="btn btn-primary btn-block btn-sm" type="button" disabled id="btnHide">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Mohon ditunggu...
                 </button>
                 <hr>
                 <div class="text-center">
@@ -74,8 +78,16 @@
   var userakifasi = $('#userakifasi');
   var username = $('#username');
   var password = $('#password');
+
   const siteUrl = '<?= site_url() ?>';
   const form = $('#formLogin');
+
+  var btnShow = $('#btnShow');
+  var btnHide = $('#btnHide');
+
+  $(document).ready(function() {
+    btnHide.hide();
+  });
 
   function ajukan() {
     $('#mAktivasi').modal('show');
@@ -138,7 +150,13 @@
   }
 
   function login_proses() {
+    btnHide.show();
+    btnShow.hide();
+
     if (username.val() == '' || username.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Username',
         text: 'Tidak boleh kosong',
@@ -148,6 +166,9 @@
     }
 
     if (password.val() == '' || password.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
       Swal.fire({
         title: 'Password',
         text: 'Tidak boleh kosong',
@@ -164,6 +185,9 @@
       dataType: 'JSON',
       success: function(result) {
         if (result == '' || result == null) {
+          btnHide.hide();
+          btnShow.show();
+
           Swal.fire({
             title: '404',
             text: 'Tidak ada respons dari sistem',
@@ -171,6 +195,9 @@
           });
           return;
         } else if (result.response == 0) {
+          btnHide.hide();
+          btnShow.show();
+
           Swal.fire({
             title: 'Akun ' + username.val(),
             text: 'Tidak ditemukan, silahkan mendaftar!',
@@ -179,8 +206,14 @@
             location.href = siteUrl + 'Auth';
           });
         } else if (result.response == 1) {
+          btnHide.hide();
+          btnShow.show();
+
           location.href = siteUrl + 'Dashboard';
         } else {
+          btnHide.hide();
+          btnShow.show();
+
           Swal.fire({
             title: 'Akun ' + username.val(),
             text: 'Gagal masuk, password berbeda!',
