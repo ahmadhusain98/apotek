@@ -41,7 +41,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" type="button" onclick="home()">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" type="button" onclick="get_menu('Dashboard')">
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fa-solid fa-prescription-bottle-medical"></i>
         </div>
@@ -111,18 +111,6 @@
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
-
-          <!-- Topbar Search -->
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                  <i class="fas fa-search fa-sm"></i>
-                </button>
-              </div>
-            </div>
-          </form>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -261,27 +249,27 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->nama; ?></span>
+                <img class="img-profile rounded-circle" src="<?= base_url() ?>assets/img/user/<?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->foto; ?>">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" type="button" onclick="get_menu('')">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
+                  Profil
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" type="button" onclick="get_menu('')">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
+                  Pengaturan
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" type="button" onclick="get_menu('')">
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
+                  Aktivitas Log
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" type="button" onclick="logout()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
+                  Keluar
                 </a>
               </div>
             </li>
@@ -324,25 +312,6 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Bootstrap core JavaScript-->
   <script src="<?= base_url() ?>assets/vendor/jquery/jquery.min.js"></script>
   <script src="<?= base_url() ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -356,13 +325,54 @@
   <script>
     const siteUrl = '<?= site_url() ?>';
 
-    function home() {
-      location.href = siteUrl + 'Dashboard';
+    function get_menu(menu) {
+      location.href = siteUrl + menu;
     }
 
-    function get_menu(menu) {
-      alert(menu)
-      location.href = siteUrl + menu;
+    function logout() {
+      Swal.fire({
+        title: "Keluar?",
+        text: "Anda akan meninggalkan sistem!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Keluar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: siteUrl + 'Auth/logout_action',
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(result) {
+              if (result == '' || result == null) {
+                Swal.fire({
+                  title: '404',
+                  text: 'Tidak ada respons dari sistem',
+                  icon: 'error'
+                });
+                return;
+              } else {
+                if (result.response == 1) {
+                  Swal.fire({
+                    title: 'Keluar',
+                    text: 'Berhasil dilakukan!',
+                    icon: 'success'
+                  }).then((result) => {
+                    location.href = siteUrl + 'Auth';
+                  });
+                } else {
+                  Swal.fire({
+                    title: 'Keluar',
+                    text: 'Gagak dilakukan, silahkan coba lagi!',
+                    icon: 'warning'
+                  });
+                }
+              }
+            }
+          });
+        }
+      });
     }
   </script>
 
