@@ -66,10 +66,19 @@
         $menu = $this->db->get_where("menu", ["id_modul" => $mo->id])->result();
         foreach ($menu as $me) :
           $param_menu1 = $this->uri->segment(1);
-          if ($param_menu1 == $me->url) {
-            $active_menu = "active";
+          $param_menu2 = $this->uri->segment(2);
+          if (empty($param_menu2)) {
+            if ($param_menu1 == $me->url) {
+              $active_menu = "active";
+            } else {
+              $active_menu = "";
+            }
           } else {
-            $active_menu = "";
+            if (($param_menu1 . '/' . $param_menu2) == $me->url) {
+              $active_menu = "active";
+            } else {
+              $active_menu = "";
+            }
           }
           echo '<li class="nav-item ' . $active_menu . '">';
           $cek_sub_menu = $this->db->query("SELECT * FROM sub_menu WHERE url LIKE '%$me->url%'")->num_rows();

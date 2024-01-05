@@ -44,4 +44,13 @@ class C_modul extends CI_Controller
 
     echo json_encode(['response' => 1]);
   }
+
+  public function l_modul()
+  {
+    $data = [
+      'judul' => 'Master Modul',
+      'list' => $this->db->get('m_modul')->result(),
+    ];
+    $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
+  }
 }
