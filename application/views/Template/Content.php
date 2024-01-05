@@ -93,7 +93,7 @@
             if ($me->id == $cek_urut_modul->id) {
               $stylePad = '';
             } else {
-              $stylePad = 'style="margin-top: -20px"';
+              $stylePad = 'style="margin-top: -15px"';
             }
             echo '<a class="nav-link" type="button" onclick="get_menu(' . "'" . $me->url . "'" . ')" ' . $stylePad . '>
               ' . $me->ikon . ' <span>' . $me->nama . '</span>
