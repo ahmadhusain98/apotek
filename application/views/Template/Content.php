@@ -67,7 +67,8 @@
         foreach ($menu as $me) :
           $param_menu1 = $this->uri->segment(1);
           $param_menu2 = $this->uri->segment(2);
-          if (empty($param_menu2)) {
+          $cek_menu = $this->db->query('SELECT * FROM menu WHERE url = "' . $param_menu1 . '/' . $param_menu2 . '"')->row();
+          if (empty($cek_menu)) {
             if ($param_menu1 == $me->url) {
               $active_menu = "active";
             } else {
