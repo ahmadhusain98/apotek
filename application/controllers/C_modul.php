@@ -49,7 +49,9 @@ class C_modul extends CI_Controller
   {
     $data = [
       'judul' => 'Master Modul',
-      'list' => $this->db->get('m_modul')->result(),
+      'modul' => $this->db->get('m_modul')->result(),
+      'menu' => $this->db->get('menu')->result(),
+      'submenu' => $this->db->get('sub_menu')->result(),
     ];
     $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
   }

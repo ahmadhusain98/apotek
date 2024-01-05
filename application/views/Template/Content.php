@@ -412,6 +412,7 @@
 
   <script>
     table.DataTable({
+      destroy: true,
       paging: true,
       processing: true,
       responsive: true,
@@ -439,6 +440,35 @@
     });
 
     table1.DataTable({
+      destroy: true,
+      paging: true,
+      processing: true,
+      responsive: true,
+      oLanguage: {
+        sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
+        sInfoEmpty: "",
+        sInfoFiltered: "Dipilih dari _TOTAL_ data",
+        sSearch: "<span>Cari : </span>",
+        sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
+        sLengthMenu: "<span>_MENU_ Baris</span>",
+        sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
+        oPaginate: {
+          sPrevious: "Sebelumnya",
+          sNext: "Berikutnya"
+        }
+      },
+      aLengthMenu: [
+        [5, 15, 40, -1],
+        [5, 15, 40, "Semua"]
+      ],
+      columnDefs: [{
+        targets: [-1],
+        orderable: false,
+      }, ],
+    });
+
+    table2.DataTable({
+      destroy: true,
       paging: true,
       processing: true,
       responsive: true,
