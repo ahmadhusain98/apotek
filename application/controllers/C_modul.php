@@ -3,6 +3,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class C_modul extends CI_Controller
 {
+  function __construct()
+  {
+    parent::__construct();
+    $user = $this->session->userdata('username');
+    if (empty($user)) {
+      redirect("Auth");
+    }
+  }
+
   public function index()
   {
     $data = [

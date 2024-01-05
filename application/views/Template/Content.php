@@ -89,7 +89,13 @@
             echo '</div>
             </div>';
           } else {
-            echo '<a class="nav-link" type="button" onclick="get_menu(' . "'" . $me->url . "'" . ')">
+            $cek_urut_modul = $this->db->query('SELECT * FROM menu WHERE id_modul = "' . $mo->id . '" ORDER BY id ASC LIMIT 1')->row();
+            if ($me->id == $cek_urut_modul->id) {
+              $stylePad = '';
+            } else {
+              $stylePad = 'style="margin-top: -20px"';
+            }
+            echo '<a class="nav-link" type="button" onclick="get_menu(' . "'" . $me->url . "'" . ')" ' . $stylePad . '>
               ' . $me->ikon . ' <span>' . $me->nama . '</span>
             </a>';
           }
