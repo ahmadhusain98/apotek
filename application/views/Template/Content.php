@@ -33,6 +33,13 @@
   <!-- Custom styles for this page -->
   <link href="<?= base_url() ?>assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+  <!-- Page level plugins -->
+  <script src="<?= base_url() ?>assets/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="<?= base_url() ?>assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="<?= base_url() ?>assets/js/demo/datatables-demo.js"></script>
+
 </head>
 
 <body id="page-top">
@@ -393,13 +400,6 @@
     }
   </script>
 
-  <!-- Page level plugins -->
-  <script src="<?= base_url() ?>assets/vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="<?= base_url() ?>assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="<?= base_url() ?>assets/js/demo/datatables-demo.js"></script>
-
   <!-- Bootstrap core JavaScript-->
   <script src="<?= base_url() ?>assets/vendor/jquery/jquery.min.js"></script>
   <script src="<?= base_url() ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -410,92 +410,7 @@
   <!-- Custom scripts for all pages-->
   <script src="<?= base_url() ?>assets/js/sb-admin-2.min.js"></script>
 
-  <script>
-    table.DataTable({
-      destroy: true,
-      paging: true,
-      processing: true,
-      responsive: true,
-      oLanguage: {
-        sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
-        sInfoEmpty: "",
-        sInfoFiltered: "Dipilih dari _TOTAL_ data",
-        sSearch: "<span>Cari : </span>",
-        sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
-        sLengthMenu: "<span>_MENU_ Baris</span>",
-        sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
-        oPaginate: {
-          sPrevious: "Sebelumnya",
-          sNext: "Berikutnya"
-        }
-      },
-      aLengthMenu: [
-        [5, 15, 40, -1],
-        [5, 15, 40, "Semua"]
-      ],
-      columnDefs: [{
-        targets: [-1],
-        orderable: false,
-      }, ],
-    });
-
-    table1.DataTable({
-      destroy: true,
-      paging: true,
-      processing: true,
-      responsive: true,
-      oLanguage: {
-        sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
-        sInfoEmpty: "",
-        sInfoFiltered: "Dipilih dari _TOTAL_ data",
-        sSearch: "<span>Cari : </span>",
-        sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
-        sLengthMenu: "<span>_MENU_ Baris</span>",
-        sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
-        oPaginate: {
-          sPrevious: "Sebelumnya",
-          sNext: "Berikutnya"
-        }
-      },
-      aLengthMenu: [
-        [5, 15, 40, -1],
-        [5, 15, 40, "Semua"]
-      ],
-      columnDefs: [{
-        targets: [-1],
-        orderable: false,
-      }, ],
-    });
-
-    table2.DataTable({
-      destroy: true,
-      paging: true,
-      processing: true,
-      responsive: true,
-      oLanguage: {
-        sEmptyTable: "<div class='text-center'>Tidak ada data</div>",
-        sInfoEmpty: "",
-        sInfoFiltered: "Dipilih dari _TOTAL_ data",
-        sSearch: "<span>Cari : </span>",
-        sInfo: " Jumlah _TOTAL_ Data (_START_ - _END_)",
-        sLengthMenu: "<span>_MENU_ Baris</span>",
-        sZeroRecords: "<div class='text-center badge text-bg-danger'>Data Kosong !!</div>",
-        oPaginate: {
-          sPrevious: "Sebelumnya",
-          sNext: "Berikutnya"
-        }
-      },
-      aLengthMenu: [
-        [5, 15, 40, -1],
-        [5, 15, 40, "Semua"]
-      ],
-      columnDefs: [{
-        targets: [-1],
-        orderable: false,
-      }, ],
-    });
-  </script>
-
+  <?php $this->load->view('datatable'); ?>
 </body>
 
 </html>
