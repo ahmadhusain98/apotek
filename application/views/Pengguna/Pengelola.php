@@ -17,6 +17,7 @@
             <th>Nomor HP</th>
             <th>Status Aktif</th>
             <th>Role</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +30,10 @@
               <td><?= $l->nohp; ?></td>
               <td><?= ($l->status_aktif > 0) ? 'Aktif' : 'Non-aktif'; ?></td>
               <td><?= $this->db->get_where('m_role', ['kode' => $l->kode_role])->row()->keterangan; ?></td>
+              <td class="text-center">
+                <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data Ke <?= $no ?>"><i class="fa-solid fa-repeat"></i></button>
+                <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data Ke <?= $no ?>"><i class="fa fa-ban"></i></button>
+              </td>
             </tr>
           <?php $no++;
           endforeach; ?>
