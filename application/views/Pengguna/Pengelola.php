@@ -16,7 +16,7 @@
             <th>Nama</th>
             <th>Nomor HP</th>
             <th>Status Aktif</th>
-            <th>Kode Role</th>
+            <th>Role</th>
           </tr>
         </thead>
         <tbody>
@@ -27,8 +27,8 @@
               <td><?= $l->username; ?></td>
               <td><?= $l->nama; ?></td>
               <td><?= $l->nohp; ?></td>
-              <td><?= $l->status_aktif; ?></td>
-              <td><?= $l->kode_role; ?></td>
+              <td><?= ($l->status_aktif > 0) ? 'Aktif' : 'Non-aktif'; ?></td>
+              <td><?= $this->db->get_where('m_role', ['kode' => $l->kode_role])->row()->keterangan; ?></td>
             </tr>
           <?php $no++;
           endforeach; ?>
