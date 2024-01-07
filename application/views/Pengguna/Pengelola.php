@@ -81,6 +81,27 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <select name="gender" id="gender" class="form-control select2_all" data-placeholder="-- Pilih Gender --">
+                  <option value="">-- Pilih Gender --</option>
+                  <option value="P">Pria</option>
+                  <option value="W">Wanita</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <select name="kode_role" id="kode_role" class="form-control select2_all" data-placeholder="-- Pilih Role --">
+                  <option value="">-- Pilih Role --</option>
+                  <?php foreach ($m_role as $mr) : ?>
+                    <option value="<?= $mr->kode ?>"><?= $mr->keterangan ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-md-12">
               <div class="form-group">
                 <textarea name="alamat" title="Alamat" id="alamat" class="form-control" placeholder="Alamat..."></textarea>
@@ -100,6 +121,12 @@
 <!-- Global -->
 <script>
   const form = $('#formPengelola');
+
+  $('.select2_all').select2({
+    dropdownParent: $('#m_pengelola'),
+    width: '100%',
+    heigh: 'auto',
+  })
 
   var table = $('#tablePengelola');
 
@@ -268,7 +295,7 @@
     }).then((result) => {
       if (result.dismiss === Swal.DismissReason.timer) {
         $.ajax({
-          url: siteUrl + 'Auth/regist_action/',
+          url: siteUrl + 'Users/add_pengelola_proses/',
           type: 'POST',
           data: form.serialize(),
           dataType: 'JSON',
@@ -286,7 +313,7 @@
               if (result.response == 1) {
                 Swal.fire({
                   title: 'Akun ' + username.val(),
-                  text: 'Berhasil ditambahkan, silahkan ajukan aktivasi!',
+                  text: 'Berhasil ditambahkan, silahkan aktivasi terlebih dahulu!',
                   icon: 'success'
                 }).then((result) => {
                   location.href = siteUrl + 'Users/pengelola';

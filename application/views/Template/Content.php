@@ -40,7 +40,29 @@
   <!-- Page level custom scripts -->
   <script src="<?= base_url() ?>assets/js/demo/datatables-demo.js"></script>
 
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <!-- animate -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 </head>
+
+<style>
+  .select2-selection__rendered {
+    line-height: 31px !important;
+  }
+
+  .select2-container .select2-selection--single {
+    height: 37px !important;
+  }
+
+  .select2-selection__arrow {
+    height: 37px !important;
+  }
+</style>
 
 <body id="page-top">
 
@@ -411,6 +433,10 @@
   <script src="<?= base_url() ?>assets/js/sb-admin-2.min.js"></script>
 
   <?php $this->load->view('datatable'); ?>
+
+  <script>
+
+  </script>
 </body>
 
 </html>

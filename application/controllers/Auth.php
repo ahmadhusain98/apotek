@@ -39,7 +39,7 @@ class Auth extends CI_Controller
     $tempat_lahir = $this->input->post('tempat_lahir');
     $tgl_lahir = $this->input->post('tgl_lahir');
     $alamat = $this->input->post('alamat');
-    $kode_role = 'R0001';
+    $kode_role = 'R0007';
     $kode_member = kode_member($nama);
     $tgl_gabung = date("Y-m-d");
     $status_akun = 1;
@@ -64,6 +64,19 @@ class Auth extends CI_Controller
     $cek = $this->M_central->simpanData('user', $dataRegist);
 
     if ($cek) {
+      $data_aktivasi = [
+        'username' => $username,
+        'aktivasi' => 0,
+      ];
+
+      $cekaktivasi = $this->M_central->jumdata('user_aktivasi', ['username' => $username]);
+
+      if ($cekaktivasi < 1) {
+        $this->M_central->simpanData('user_aktivasi', $data_aktivasi);
+      } else {
+        $this->M_central->updateData('user_aktivasi', $data_aktivasi, ['username' => $username]);
+      }
+
       echo json_encode(['response' => 1]);
     } else {
       echo json_encode(['response' => 0]);

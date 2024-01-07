@@ -21,6 +21,11 @@ class M_central extends CI_Model
     return $this->db->get_where($table, $data)->result();
   }
 
+  function getResult($table)
+  {
+    return $this->db->get($table)->result();
+  }
+
   function updateData($table, $data, $where)
   {
     return $this->db->update($table, $data, $where);
