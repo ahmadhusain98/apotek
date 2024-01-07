@@ -8,6 +8,8 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
     if ($kondisi == 'user_pengelola') {
         $CI->db->where('kode_role', 'R0001');
         $CI->db->order_by('username', 'ASC');
+    } else if (($kondisi == 'modul') || ($kondisi == 'menu') || ($kondisi == 'submenu')) {
+        $CI->db->order_by('nama', 'ASC');
     }
     $i = 0;
     foreach ($column_search as $item) {
@@ -60,6 +62,8 @@ function count_all($table, $column_order, $column_search, $order, $kondisi)
     if ($kondisi == 'user_pengelola') {
         $CI->db->where('kode_role', 'R0001');
         $CI->db->order_by('username', 'ASC');
+    } else if (($kondisi == 'modul') || ($kondisi == 'menu') || ($kondisi == 'submenu')) {
+        $CI->db->order_by('nama', 'ASC');
     }
     return $CI->db->count_all_results();
 }
