@@ -30,4 +30,9 @@ class M_central extends CI_Model
   {
     return $this->db->update($table, $data, $where);
   }
+
+  function delData($table, $where)
+  {
+    return $this->db->delete($table, $where);
+  }
 }

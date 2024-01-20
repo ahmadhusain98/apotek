@@ -49,10 +49,17 @@ class Users extends CI_Controller
       $row[]            = $l->nohp;
       $row[]            = ($l->status_aktif > 0) ? 'Aktif' : 'Non-aktif';
       $row[]            = $this->M_central->getDataRow('m_role', ['kode' => $l->kode_role])->keterangan;
-      $row[]            = '<div class="text-center">
-        <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '"><i class="fa-solid fa-repeat"></i></button>
-        <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '"><i class="fa fa-ban"></i></button>
-      </div>';
+      if ($l->status_aktif > 0) {
+        $row[]            = '<div class="text-center">
+          <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" disabled><i class="fa-solid fa-repeat"></i></button>
+          <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
+        </div>';
+      } else {
+        $row[]            = '<div class="text-center">
+          <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+          <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
+        </div>';
+      }
 
       $data[]           = $row;
       $no++;
@@ -66,11 +73,10 @@ class Users extends CI_Controller
     echo json_encode($output);
   }
 
-  public function add_pengelola_proses()
+  public function add_pengelola_proses($param)
   {
     $nama = $this->input->post('nama');
     $username = $this->input->post('username');
-    $sandi = md5($this->input->post('password'));
     $nohp = $this->input->post('nohp');
     $email = $this->input->post('email');
     $tempat_lahir = $this->input->post('tempat_lahir');
@@ -78,10 +84,23 @@ class Users extends CI_Controller
     $alamat = $this->input->post('alamat');
     $gender = $this->input->post('gender');
     $kode_role = $this->input->post('kode_role');
-    $kode_member = kode_member($nama);
-    $tgl_gabung = date("Y-m-d");
     $status_akun = 1;
     $status_aktif = 0;
+
+    if ($param == 2) {
+      $kode_member = $this->M_central->getDataRow('user', ['username' => $username])->kode_member;
+      $tgl_gabung = date("Y-m-d", strtotime($this->M_central->getDataRow('user', ['username' => $username])->tgl_gabung));
+
+      if ($this->input->post('password') == '') {
+        $sandi = $this->M_central->getDataRow('user', ['username' => $username])->sandi;
+      } else {
+        $sandi = md5($this->input->post('password'));
+      }
+    } else {
+      $kode_member = kode_member($nama);
+      $sandi = md5($this->input->post('password'));
+      $tgl_gabung = date("Y-m-d");
+    }
 
     if ($gender == 'P') {
       $foto = 'default1.svg';
@@ -107,7 +126,11 @@ class Users extends CI_Controller
       'kode_role' => $kode_role,
     ];
 
-    $cek = $this->M_central->simpanData('user', $dataRegist);
+    if ($param == 2) {
+      $cek = $this->M_central->updateData('user', $dataRegist, ['username' => $username]);
+    } else {
+      $cek = $this->M_central->simpanData('user', $dataRegist);
+    }
 
     if ($cek) {
       $data_aktivasi = [
@@ -124,6 +147,35 @@ class Users extends CI_Controller
       }
 
       echo json_encode(['response' => 1]);
+    } else {
+      echo json_encode(['response' => 0]);
+    }
+  }
+
+  public function deleted_pengelola_proses($username)
+  {
+    $cek_user = $this->M_central->jumdata('user', ['username' => $username]);
+    if ($cek_user > 0) {
+      $cek = [
+        $this->M_central->delData('user', ['username' => $username]),
+        $this->M_central->delData('user_aktivasi', ['username' => $username]),
+      ];
+
+      if ($cek) {
+        echo json_encode(['response' => 1]);
+      } else {
+        echo json_encode(['response' => 0]);
+      }
+    } else {
+      echo json_encode(['response' => 2]);
+    }
+  }
+
+  public function get_data_user($username)
+  {
+    $data = $this->M_central->getDataRow('user', ['username' => $username]);
+    if ($data) {
+      echo json_encode($data);
     } else {
       echo json_encode(['response' => 0]);
     }

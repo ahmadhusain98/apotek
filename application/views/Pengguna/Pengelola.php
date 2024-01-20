@@ -47,7 +47,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onchange="cekUsername(this.value)">
+                <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onkeyup="delspace(this.value)" onchange="cekUsername(this.value)">
               </div>
             </div>
             <div class="col-md-6">
@@ -111,6 +111,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+          <input type="hidden" name="prosesx" id="prosesx" value="1">
           <button type="button" class="btn btn-primary btn-sm" onclick="proses()">Proses</button>
         </div>
       </div>
@@ -135,13 +136,21 @@
   var password = $('#password');
   var nohp = $('#nohp');
   var email = $('#email');
+  var gender = $('#gender');
   var tempat_lahir = $('#tempat_lahir');
   var tgl_lahir = $('#tgl_lahir');
+  var kode_role = $('#kode_role');
   var alamat = $('#alamat');
+  var prosesx = $('#prosesx');
 </script>
 
 <!-- another function -->
 <script>
+  function delspace(param) {
+    var usernamex = param.trim();
+    username.val(usernamex);
+  }
+
   function cekUsername(param) {
     $('#m_pengelola').modal('hide');
     if (param == '' || param == null) {} else {
@@ -174,9 +183,119 @@
               return;
             }
           }
+        },
+        error: function(result) {
+          Swal.fire({
+            title: '501',
+            text: 'Error Sistem',
+            icon: 'error'
+          })
+          return;
         }
       })
     }
+  }
+
+  function deleted(username) {
+    Swal.fire({
+      title: "Anda yakin?",
+      text: "Data yang dihapus tidak bisa di kembalikan!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Tidak"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: siteUrl + 'Users/deleted_pengelola_proses/' + username,
+          type: 'POST',
+          dataType: 'JSON',
+          success: function(result) {
+            if (result == '' || result == null) {
+              Swal.fire({
+                title: '404',
+                text: 'Tidak ada respons dari sistem',
+                icon: 'error'
+              })
+              return;
+            } else {
+              if (result.response == 1) {
+                Swal.fire({
+                  title: 'Akun ' + username,
+                  text: 'Berhasil dihapus!',
+                  icon: 'success'
+                }).then((result) => {
+                  location.href = siteUrl + 'Users/pengelola';
+                });
+              } else {
+                Swal.fire({
+                  title: 'Akun ' + username.val(),
+                  text: 'Gagak dihapus!',
+                  icon: 'warning'
+                });
+              }
+            }
+          },
+          error: function(result) {
+            Swal.fire({
+              title: '501',
+              text: 'Error Sistem',
+              icon: 'error'
+            })
+            return;
+          }
+        });
+      }
+    });
+  }
+
+  function updated(param) {
+    prosesx.val(2)
+    $.ajax({
+      url: siteUrl + 'Users/get_data_user/' + param,
+      type: 'POST',
+      dataType: 'JSON',
+      success: function(result) {
+        if (result == '' || result == null) {
+          Swal.fire({
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
+            icon: 'error'
+          })
+          return;
+        } else {
+          if (result.response == 0) {
+            Swal.fire({
+              title: 'Akun ' + param,
+              text: 'Tidak ditemukan!',
+              icon: 'error'
+            });
+            return;
+          } else {
+            $('#m_pengelola').modal('show');
+            nama.val(result.nama);
+            username.val(result.username);
+            nohp.val(result.nohp);
+            email.val(result.email);
+            tempat_lahir.val(result.tempat_lahir);
+            tgl_lahir.val(result.tgl_lahir);
+            gender.val(result.gender).change();
+            kode_role.val(result.kode_role).change();
+            alamat.val(result.alamat);
+          }
+        }
+      },
+      error: function(result) {
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        });
+        return;
+      }
+    });
   }
 </script>
 
@@ -188,6 +307,7 @@
   }
 
   function proses() {
+    var proses_ = prosesx.val();
     $('#m_pengelola').modal('hide');
 
     if (nama.val() == '' || nama.val() == null) {
@@ -212,13 +332,15 @@
       return;
     }
 
-    if (password.val() == '' || password.val() == null) {
-      Swal.fire({
-        title: 'Sandi',
-        text: 'Tidak boleh kosong',
-        icon: 'error'
-      });
-      return;
+    if (proses_ == 1) {
+      if (password.val() == '' || password.val() == null) {
+        Swal.fire({
+          title: 'Sandi',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
     }
 
     if (nohp.val() == '' || nohp.val() == null) {
@@ -276,6 +398,14 @@
       return;
     }
 
+    if (proses_ == 1) {
+      var pesan_success = 'ditambahkan, silahkan aktivasi terlebih dahulu!';
+      var pesan_error = 'ditambahkan, silahkan coba lagi!';
+    } else {
+      var pesan_success = 'diperbaharui!';
+      var pesan_error = 'diperbaharui, silahkan coba lagi!';
+    }
+
     let timerInterval;
     Swal.fire({
       title: "Mohon Tunggu!",
@@ -295,7 +425,7 @@
     }).then((result) => {
       if (result.dismiss === Swal.DismissReason.timer) {
         $.ajax({
-          url: siteUrl + 'Users/add_pengelola_proses/',
+          url: siteUrl + 'Users/add_pengelola_proses/' + proses_,
           type: 'POST',
           data: form.serialize(),
           dataType: 'JSON',
@@ -313,7 +443,7 @@
               if (result.response == 1) {
                 Swal.fire({
                   title: 'Akun ' + username.val(),
-                  text: 'Berhasil ditambahkan, silahkan aktivasi terlebih dahulu!',
+                  text: 'Berhasil ' + pesan_success,
                   icon: 'success'
                 }).then((result) => {
                   location.href = siteUrl + 'Users/pengelola';
@@ -321,13 +451,21 @@
               } else {
                 Swal.fire({
                   title: 'Akun ' + username.val(),
-                  text: 'Gagak ditambahkan, silahkan coba lagi!',
+                  text: 'Gagak ' + pesan_error,
                   icon: 'warning'
                 }).then((value) => {
                   $('#m_pengelola').modal('show');
                 });
               }
             }
+          },
+          error: function(result) {
+            Swal.fire({
+              title: '501',
+              text: 'Error Sistem',
+              icon: 'error'
+            })
+            return;
           }
         });
       }
