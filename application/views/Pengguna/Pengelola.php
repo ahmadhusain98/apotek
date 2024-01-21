@@ -4,7 +4,9 @@
   <div class=" card shadow mb-4">
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">List data pengelola
-        <button class="btn btn-primary btn-sm float-right" type="button" onclick="add_pengelola()"><i class="fa fa-plus"></i> Tambah List</button>
+        <?php if ($role_aksi->tambah > 0) : ?>
+          <button class="btn btn-primary btn-sm float-right" type="button" onclick="add_pengelola()"><i class="fa fa-plus"></i> Tambah List</button>
+        <?php endif; ?>
       </h6>
     </div>
     <div class="card-body">

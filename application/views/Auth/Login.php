@@ -210,6 +210,15 @@
           btnShow.show();
 
           location.href = siteUrl + 'Dashboard';
+        } else if (result.response == 3) {
+          btnHide.hide();
+          btnShow.show();
+
+          Swal.fire({
+            title: 'Akun ' + username.val(),
+            text: 'Belum diaktivasi, silahkan ajukan aktivasi akun!',
+            icon: 'error'
+          });
         } else {
           btnHide.hide();
           btnShow.show();
@@ -220,6 +229,14 @@
             icon: 'error'
           });
         }
+      },
+      error: function(result) {
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        });
+        return;
       }
     })
   }

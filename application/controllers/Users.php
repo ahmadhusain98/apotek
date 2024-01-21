@@ -11,8 +11,17 @@ class Users extends CI_Controller
     setlocale(LC_ALL, 'id_ID.utf8');
     date_default_timezone_set('Asia/Jakarta');
 
-    if (empty($this->session->userdata('username'))) {
+    $sess = $this->session->userdata('username');
+
+    $user = $this->M_central->getDataRow('user', ['username' => $sess]);
+
+    if (empty($sess)) {
       redirect('Auth');
+    } else {
+      if (($user->kode_role == 'R0001') || ($user->kode_role == 'R0003')) {
+      } else {
+        redirect('Dashboard');
+      }
     }
   }
 
@@ -22,11 +31,14 @@ class Users extends CI_Controller
 
   public function pengelola()
   {
+    $sess = $this->session->userdata('username');
+    $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
     $data = [
       'judul' => 'Pengelola',
       $this->data,
       'list_ajax' => 'Users/list_pengelola',
       'm_role' => $this->M_central->getResult('m_role'),
+      'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
     ];
 
     $this->template->load('Template/Content', 'Pengguna/Pengelola', $data);
@@ -59,10 +71,27 @@ class Users extends CI_Controller
           <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
         </div>';
       } else {
-        $row[]            = '<div class="text-center">
-          <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
-          <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
-        </div>';
+        if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
+          </div>';
+        } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
+          </div>';
+        } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" disabled><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
+          </div>';
+        } else {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" disabled><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
+          </div>';
+        }
       }
 
       $data[]           = $row;
@@ -187,11 +216,14 @@ class Users extends CI_Controller
 
   public function member()
   {
+    $sess = $this->session->userdata('username');
+    $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
     $data = [
       'judul' => 'Member',
       $this->data,
       'list_ajax' => 'Users/list_member',
       'm_role' => $this->M_central->getResult('m_role'),
+      'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
     ];
 
     $this->template->load('Template/Content', 'Pengguna/Member', $data);
@@ -224,10 +256,27 @@ class Users extends CI_Controller
           <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
         </div>';
       } else {
-        $row[]            = '<div class="text-center">
-          <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
-          <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
-        </div>';
+        if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
+          </div>';
+        } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" onclick="updated(' . "'" . $l->username . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
+          </div>';
+        } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" disabled><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" disabled><i class="fa fa-ban"></i></button>
+          </div>';
+        } else {
+          $row[]            = '<div class="text-center">
+            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->username . '" disabled><i class="fa-solid fa-repeat"></i></button>
+            <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->username . '" onclick="deleted(' . "'" . $l->username . "'" . ')"><i class="fa fa-ban"></i></button>
+          </div>';
+        }
       }
 
       $data[]           = $row;

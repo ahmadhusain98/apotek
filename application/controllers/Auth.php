@@ -120,22 +120,27 @@ class Auth extends CI_Controller
     if ($cekuser < 1) {
       echo json_encode(['response' => 0]);
     } else {
-      $cekpass = $this->M_central->getDataRow('user', ['username' => $username]);
+      $cek_aktivasi = $this->M_central->getDataRow('user', ['username' => $username]);
+      if ($cek_aktivasi->status_akun > 0) {
+        $cekpass = $this->M_central->getDataRow('user', ['username' => $username]);
 
-      if ($cekpass->sandi == md5($password)) {
-        $dataSession = [
-          'username' => $cekpass->username,
-          'nama' => $cekpass->nama,
-          'kode_member' => $cekpass->kode_member,
-          'kode_role' => $cekpass->kode_role,
-        ];
-        $this->session->set_userdata($dataSession);
+        if ($cekpass->sandi == md5($password)) {
+          $dataSession = [
+            'username' => $cekpass->username,
+            'nama' => $cekpass->nama,
+            'kode_member' => $cekpass->kode_member,
+            'kode_role' => $cekpass->kode_role,
+          ];
+          $this->session->set_userdata($dataSession);
 
-        $this->M_central->updateData('user', ['status_aktif' => 1], ['username' => $username]);
+          $this->M_central->updateData('user', ['status_aktif' => 1], ['username' => $username]);
 
-        echo json_encode(['response' => 1]);
+          echo json_encode(['response' => 1]);
+        } else {
+          echo json_encode(['response' => 2]);
+        }
       } else {
-        echo json_encode(['response' => 2]);
+        echo json_encode(['response' => 3]);
       }
     }
   }
