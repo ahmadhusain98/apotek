@@ -277,6 +277,7 @@
             $('#m_pengelola').modal('show');
             nama.val(result.nama);
             username.val(result.username);
+            password.val(result.sandi_ori);
             nohp.val(result.nohp);
             email.val(result.email);
             tempat_lahir.val(result.tempat_lahir);
