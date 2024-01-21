@@ -169,7 +169,10 @@
     $(document).ready(function() {
         btnHide.hide();
     });
+</script>
 
+<!-- another function -->
+<script>
     // when photo has been change
     $("#foto_profil").change(function() {
         readURL(this);
@@ -197,7 +200,10 @@
             $('#password').attr("type", "password");
         }
     }
+</script>
 
+<!-- Update function -->
+<script>
     function update_akun() {
         btnShow.hide();
         btnHide.show();
