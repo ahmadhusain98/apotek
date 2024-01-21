@@ -269,7 +269,7 @@
 
             Swal.fire({
               title: 'Akun ' + username.val(),
-              text: 'Gagak didaftarkan, silahkan coba lagi!',
+              text: 'Gagal didaftarkan, silahkan coba lagi!',
               icon: 'warning'
             });
           }
