@@ -39,11 +39,18 @@ class Auth extends CI_Controller
     $tempat_lahir = $this->input->post('tempat_lahir');
     $tgl_lahir = $this->input->post('tgl_lahir');
     $alamat = $this->input->post('alamat');
-    $kode_role = 'R0007';
+    $gender = $this->input->post('gender');
+    $kode_role = 'R0005';
     $kode_member = kode_member($nama);
     $tgl_gabung = date("Y-m-d");
     $status_akun = 1;
     $status_aktif = 0;
+
+    if ($gender == 'P') {
+      $foto = 'default1.svg';
+    } else {
+      $foto = 'default2.svg';
+    }
 
     $dataRegist = [
       'username' => $username,
@@ -59,6 +66,9 @@ class Auth extends CI_Controller
       'tgl_lahir' => $tgl_lahir,
       'tempat_lahir' => $tempat_lahir,
       'kode_role' => $kode_role,
+      'gender' => $gender,
+      'foto' => $foto,
+      'status_akun' => 1,
     ];
 
     $cek = $this->M_central->simpanData('user', $dataRegist);

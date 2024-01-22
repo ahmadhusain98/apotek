@@ -15,9 +15,18 @@
                 </div>
                 <hr>
                 <div class="row">
-                  <div class="col-md-12">
+                  <div class="col-md-6">
                     <div class="form-group">
                       <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama...">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <select name="gender" id="gender" class="form-control select2_all" data-placeholder="-- Pilih Gender --">
+                        <option value="">-- Pilih Gender --</option>
+                        <option value="P">Pria</option>
+                        <option value="W">Wanita</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -105,6 +114,11 @@
   $(document).ready(function() {
     btnHide.hide();
   });
+
+  $('.select2_all').select2({
+    width: '100%',
+    heigh: 'auto',
+  })
 
   function cekUsername(param) {
     if (param == '' || param == null) {} else {
