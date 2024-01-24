@@ -18,6 +18,24 @@ function kode_member($param)
   return $updateNumber;
 }
 
+function kode_kategori()
+{
+  $CI           = &get_instance();
+
+  $number       = 1;
+  $awal         = 'KAT';
+
+  $lastNumber   = $CI->db->query('SELECT kode FROM m_kategori ORDER BY id DESC LIMIT 1')->row();
+  if ($lastNumber) {
+    $number += 1;
+    $updateNumber = $awal . sprintf("%07d", $number);
+  } else {
+    $number = 0;
+    $updateNumber = $awal . "0000001";
+  }
+  return $updateNumber;
+}
+
 function last_id($table, $get)
 {
   $CI = &get_instance();
