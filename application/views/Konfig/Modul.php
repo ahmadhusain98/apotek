@@ -27,7 +27,7 @@
                 foreach ($list as $m) : ?>
                   <tr>
                     <td><?= $no; ?></td>
-                    <td><?= ($m->id == 1) ? 'Beranda' : $m->nama; ?></td>
+                    <td><?= $m->nama; ?></td>
                     <td>
                       <button type="button" class="btn btn-sm btn-primary" id="btnDari<?= $m->id; ?>" onclick="dari('<?= $m->id; ?>', '<?= $m->nama ?>')">Pilih</button>
                     </td>
@@ -58,7 +58,7 @@
                 foreach ($list as $m) : ?>
                   <tr>
                     <td><?= $no; ?></td>
-                    <td><?= ($m->id == 1) ? 'Beranda' : $m->nama; ?></td>
+                    <td><?= $m->nama; ?></td>
                     <td>
                       <button type="button" class="btn btn-sm btn-primary" id="btnKe<?= $m->id; ?>" onclick="ke('<?= $m->id; ?>', '<?= $m->nama ?>')">Pilih</button>
                     </td>
@@ -237,6 +237,14 @@
                 });
               }
             }
+          },
+          error: function(result) {
+            Swal.fire({
+              title: '501',
+              text: 'Error Sistem',
+              icon: 'error'
+            })
+            return;
           }
         });
       }

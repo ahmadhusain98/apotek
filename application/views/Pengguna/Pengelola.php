@@ -1,5 +1,12 @@
 <form method="post" id="formPengelola">
-  <div class="h4 mb-3 text-gray-800">Pengguna / pengelola</div>
+  <div class="h4 mb-3 text-gray-800">Pengguna / pengelola
+    <div class="btn-group float-right" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-dark btn-sm" disabled>Video Tutorial <i class="fa fa-arrow-alt-circle-right"></i></button>
+      <button type="button" class="btn btn-info btn-sm" title="Tutorial Tambah" onclick="tutor(1)"><i class="fa fa-plus"></i></button>
+      <button type="button" class="btn btn-info btn-sm" title="Tutorial Ubah" onclick="tutor(2)"><i class="fa fa-repeat"></i></button>
+      <button type="button" class="btn btn-info btn-sm" title="Tutorial Hapus" onclick="tutor(3)"><i class="fa fa-ban"></i></button>
+    </div>
+  </div>
 
   <div class=" card shadow mb-4">
     <div class="card-header py-3">
@@ -114,7 +121,21 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
           <input type="hidden" name="prosesx" id="prosesx" value="1">
-          <button type="button" class="btn btn-primary btn-sm" onclick="proses()">Proses</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="proses()" id="btnShow">Proses</button>
+          <button class="btn btn-primary btn-sm" type="button" disabled id="btnHide">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Mohon ditunggu...
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="m_tutorial" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div id="body_tutor"></div>
         </div>
       </div>
     </div>
@@ -124,6 +145,8 @@
 <!-- Global -->
 <script>
   const form = $('#formPengelola');
+  const btnShow = $('#btnShow');
+  const btnHide = $('#btnHide');
 
   $('.select2_all').select2({
     dropdownParent: $('#m_pengelola'),
@@ -144,6 +167,10 @@
   var kode_role = $('#kode_role');
   var alamat = $('#alamat');
   var prosesx = $('#prosesx');
+
+  $(document).ready(function() {
+    btnHide.hide()
+  });
 </script>
 
 <!-- another function -->
@@ -154,7 +181,10 @@
   }
 
   function cekUsername(param) {
+    btnShow.hide();
+    btnHide.show();
     $('#m_pengelola').modal('hide');
+
     if (param == '' || param == null) {} else {
       $.ajax({
         url: siteUrl + 'Auth/cekUsername/' + param,
@@ -162,6 +192,9 @@
         dataType: 'JSON',
         success: function(result) {
           if (result == '' || result == null) {
+            btnShow.show();
+            btnHide.hide();
+
             Swal.fire({
               title: '404',
               text: 'Tidak ada respons dari sistem',
@@ -173,6 +206,8 @@
             return;
           } else {
             if (result.response == 1) {
+              btnShow.show();
+              btnHide.hide();
               username.val('');
               Swal.fire({
                 title: 'Username',
@@ -187,6 +222,8 @@
           }
         },
         error: function(result) {
+          btnShow.show();
+          btnHide.hide();
           Swal.fire({
             title: '501',
             text: 'Error Sistem',
@@ -198,61 +235,6 @@
     }
   }
 
-  function deleted(username) {
-    Swal.fire({
-      title: "Anda yakin?",
-      text: "Data yang dihapus tidak bisa di kembalikan!",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, hapus!",
-      cancelButtonText: "Tidak"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        $.ajax({
-          url: siteUrl + 'Users/deleted_pengelola_proses/' + username,
-          type: 'POST',
-          dataType: 'JSON',
-          success: function(result) {
-            if (result == '' || result == null) {
-              Swal.fire({
-                title: '404',
-                text: 'Tidak ada respons dari sistem',
-                icon: 'error'
-              })
-              return;
-            } else {
-              if (result.response == 1) {
-                Swal.fire({
-                  title: 'Akun ' + username,
-                  text: 'Berhasil dihapus!',
-                  icon: 'success'
-                }).then((result) => {
-                  location.href = siteUrl + 'Users/pengelola';
-                });
-              } else {
-                Swal.fire({
-                  title: 'Akun ' + username.val(),
-                  text: 'Gagal dihapus!',
-                  icon: 'warning'
-                });
-              }
-            }
-          },
-          error: function(result) {
-            Swal.fire({
-              title: '501',
-              text: 'Error Sistem',
-              icon: 'error'
-            })
-            return;
-          }
-        });
-      }
-    });
-  }
-
   function updated(param) {
     prosesx.val(2)
     $.ajax({
@@ -261,6 +243,9 @@
       dataType: 'JSON',
       success: function(result) {
         if (result == '' || result == null) {
+          btnShow.show();
+          btnHide.hide();
+
           Swal.fire({
             title: '404',
             text: 'Tidak ada respons dari sistem',
@@ -276,9 +261,13 @@
             });
             return;
           } else {
+            btnShow.show();
+            btnHide.hide();
             $('#m_pengelola').modal('show');
+
             nama.val(result.nama);
             username.val(result.username);
+            username.attr('readonly', true);
             password.val(result.sandi_ori);
             nohp.val(result.nohp);
             email.val(result.email);
@@ -291,6 +280,9 @@
         }
       },
       error: function(result) {
+        btnShow.show();
+        btnHide.hide();
+
         Swal.fire({
           title: '501',
           text: 'Error Sistem',
@@ -300,16 +292,41 @@
       }
     });
   }
+
+  function tutor(param) {
+    $('#m_tutorial').modal('show');
+    var body = $('#body_tutor');
+    body.empty();
+    if (param == 1) {
+      body.append(`<div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola_insert.mp4" allowfullscreen></iframe>
+      </div>`);
+    } else if (param == 2) {
+      body.append(`<div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola_update.mp4" allowfullscreen></iframe>
+      </div>`);
+    } else {
+      body.append(`<div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola_delete.mp4" allowfullscreen></iframe>
+      </div>`);
+    }
+  }
 </script>
 
-<!-- proses add/update -->
+<!-- proses proses add, update, and delete -->
 <script>
   function add_pengelola() {
+    btnShow.show();
+    btnHide.hide();
+
     $('#m_pengelola').modal('show');
     $('.modal-title').text('Form Tambah User Pengelola');
   }
 
   function proses() {
+    btnShow.hide();
+    btnHide.show();
+
     var proses_ = prosesx.val();
     $('#m_pengelola').modal('hide');
 
@@ -409,28 +426,79 @@
       var pesan_error = 'diperbaharui, silahkan coba lagi!';
     }
 
-    let timerInterval;
-    Swal.fire({
-      title: "Mohon Tunggu!",
-      html: "Sedang melakukan proses",
-      timer: 1000,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-        const timer = Swal.getPopup().querySelector("b");
-        timerInterval = setInterval(() => {
-          timer.textContent = `${Swal.getTimerLeft()}`;
-        }, 100);
+    $.ajax({
+      url: siteUrl + 'Users/add_pengelola_proses/' + proses_,
+      type: 'POST',
+      data: form.serialize(),
+      dataType: 'JSON',
+      success: function(result) {
+        if (result == '' || result == null) {
+          btnShow.show();
+          btnHide.hide();
+
+          Swal.fire({
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
+            icon: 'error'
+          }).then((value) => {
+            $('#m_pengelola').modal('show');
+          });
+          return;
+        } else {
+          if (result.response == 1) {
+            btnShow.show();
+            btnHide.hide();
+
+            Swal.fire({
+              title: 'Akun ' + username.val(),
+              text: 'Berhasil ' + pesan_success,
+              icon: 'success'
+            }).then((result) => {
+              location.href = siteUrl + 'Users/pengelola';
+            });
+          } else {
+            btnShow.show();
+            btnHide.hide();
+
+            Swal.fire({
+              title: 'Akun ' + username.val(),
+              text: 'Gagak ' + pesan_error,
+              icon: 'warning'
+            }).then((value) => {
+              $('#m_pengelola').modal('show');
+            });
+          }
+        }
       },
-      willClose: () => {
-        clearInterval(timerInterval);
+      error: function(result) {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        })
+        return;
       }
+    });
+  }
+
+  function deleted(username) {
+    Swal.fire({
+      title: "Anda yakin?",
+      text: "Data yang dihapus tidak bisa di kembalikan!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Tidak"
     }).then((result) => {
-      if (result.dismiss === Swal.DismissReason.timer) {
+      if (result.isConfirmed) {
         $.ajax({
-          url: siteUrl + 'Users/add_pengelola_proses/' + proses_,
+          url: siteUrl + 'Users/deleted_pengelola_proses/' + username,
           type: 'POST',
-          data: form.serialize(),
           dataType: 'JSON',
           success: function(result) {
             if (result == '' || result == null) {
@@ -438,15 +506,13 @@
                 title: '404',
                 text: 'Tidak ada respons dari sistem',
                 icon: 'error'
-              }).then((value) => {
-                $('#m_pengelola').modal('show');
-              });
+              })
               return;
             } else {
               if (result.response == 1) {
                 Swal.fire({
-                  title: 'Akun ' + username.val(),
-                  text: 'Berhasil ' + pesan_success,
+                  title: 'Akun ' + username,
+                  text: 'Berhasil dihapus!',
                   icon: 'success'
                 }).then((result) => {
                   location.href = siteUrl + 'Users/pengelola';
@@ -454,10 +520,8 @@
               } else {
                 Swal.fire({
                   title: 'Akun ' + username.val(),
-                  text: 'Gagak ' + pesan_error,
+                  text: 'Gagal dihapus!',
                   icon: 'warning'
-                }).then((value) => {
-                  $('#m_pengelola').modal('show');
                 });
               }
             }

@@ -52,11 +52,15 @@ class Users extends CI_Controller
     $order          = ['username', 'ASC'];
     $kondisi        = 'user_pengelola';
 
+
+    $sess = $this->session->userdata('username');
+    $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+
     $data   = [];
     $no     = 1;
     $list   = get_datatables($table, $column_order, $column_search, $order, $kondisi);
     foreach ($list as $l) {
-      $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $l->kode_role]);
+      $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]);
       $row              = [];
 
       $row[]            = '<div class="text-right">' . $no . '</div>';

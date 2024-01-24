@@ -6,10 +6,10 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
     $CI->db->select($column_order);
     $CI->db->from($table);
     if ($kondisi == 'user_pengelola') {
-        $CI->db->where('kode_role', 'R0001');
+        $CI->db->where('kode_role <> ', 'R0005');
         $CI->db->order_by('username', 'ASC');
     } else if ($kondisi == 'user_member') {
-        $CI->db->where('kode_role <> ', 'R0001');
+        $CI->db->where('kode_role', 'R0005');
         $CI->db->order_by('username', 'ASC');
     } else if (($kondisi == 'modul') || ($kondisi == 'menu') || ($kondisi == 'submenu')) {
         $CI->db->order_by('nama', 'ASC');
