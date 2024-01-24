@@ -11,6 +11,7 @@
   <div class=" card shadow mb-4">
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">List data pengelola
+        <button type="button" class="btn btn-sm float-right" style="background-color: transparent; border: 0px;" title="Informasi" onclick="forInfo()"><i class="fa fa-2x fa-info-circle text-info"></i></button>
         <?php if ($role_aksi->tambah > 0) : ?>
           <button class="btn btn-primary btn-sm float-right" type="button" onclick="add_pengelola()"><i class="fa fa-plus"></i> Tambah List</button>
         <?php endif; ?>
@@ -68,7 +69,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <input type="text" title="Nomor Hp" class="form-control" id="nohp" name="nohp" placeholder="Nomor Hp...">
+                <input type="number" title="Nomor Hp" class="form-control" id="nohp" name="nohp" placeholder="Nomor Hp..." onkeyup="maxhp(this.value)">
               </div>
             </div>
             <div class="col-md-6">
@@ -137,6 +138,18 @@
         <div class="modal-body">
           <div id="body_tutor"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0; height: 200px;">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+      <div class="toast-header">
+        <strong class="mr-auto text-primary">Informasi</strong>
+        <small class="text-danger">Akun dengan status <i><b>online</b></i></small>
+      </div>
+      <div class="toast-body">
+        Tidak dapat diubah, maupun dihapus!
       </div>
     </div>
   </div>
@@ -309,6 +322,27 @@
       body.append(`<div class="embed-responsive embed-responsive-16by9">
         <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola_delete.mp4" allowfullscreen></iframe>
       </div>`);
+    }
+  }
+
+  function forInfo() {
+    $('#liveToast').toast('show')
+  }
+
+  function maxhp(param) {
+    if (param.length >= 15) {
+      btnShow.show();
+      btnHide.hide();
+      nohp.val(param.substring(0, 15));
+
+      Swal.fire({
+        title: 'Nomor Hp',
+        text: 'Maksimal 15 digit!',
+        icon: 'error'
+      }).then((value) => {
+        $('#m_pengelola').modal('show');
+      });
+      return;
     }
   }
 </script>
