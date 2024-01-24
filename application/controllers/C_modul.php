@@ -63,26 +63,58 @@ class C_modul extends CI_Controller
     $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
   }
 
-  public function proses($param)
+  public function proses($param, $forProses)
   {
-    if ($param == 1) {
-      $nama_modul = $this->input->post('nama_modul');
+    if ($forProses == 1) {
+      if ($param == 1) {
+        $nama_modul = $this->input->post('nama_modul');
 
-      $data = [
-        'id' => last_id('m_modul', 'id'),
-        'nama' => $nama_modul,
-      ];
+        $data = [
+          'id' => last_id('m_modul', 'id'),
+          'nama' => $nama_modul,
+        ];
 
-      $table = 'm_modul';
+        $table = 'm_modul';
+      }
+
+      $cek = $this->M_central->simpanData($table, $data);
+    } else {
+      if ($param == 1) {
+        $nama_modul = $this->input->post('nama_modul');
+
+        $data = [
+          'nama' => $nama_modul,
+        ];
+
+        $table = 'm_modul';
+        $where = ['id' => $this->input->post('id_modul')];
+      }
+
+      $cek = $this->M_central->updateData($table, $data, $where);
     }
-
-    $cek = $this->M_central->simpanData($table, $data);
 
     if ($cek) {
       echo json_encode(['response' => 1]);
     } else {
       echo json_encode(['response' => 0]);
     }
+  }
+
+  public function showData($param, $by)
+  {
+    if ($param == 1) {
+      $table = 'm_modul';
+      $where = ['id' => $by];
+    }
+
+    $data = $this->M_central->getDataRow($table, $where);
+
+    if ($param == 1) {
+      $id = $data->id;
+      $nama = $data->nama;
+    }
+
+    echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama]);
   }
 
   public function deleted_proses($param, $by)

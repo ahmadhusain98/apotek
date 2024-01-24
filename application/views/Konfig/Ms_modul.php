@@ -16,7 +16,7 @@
       <div class="col-sm-12">
         <div class="row mb-3">
           <div class="col-sm-12">
-            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah(1)"><i class="fa fa-plus"></i> Tambah Modul</button>
+            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('1', '1')"><i class="fa fa-plus"></i> Tambah Modul</button>
           </div>
         </div>
         <div class="table-responsive">
@@ -40,8 +40,8 @@
                   <td><?= $no ?></td>
                   <td><?= $nama ?></td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data<?= $nama; ?>" onclick="show_data('<?= $mo->id; ?>')"><i class="fa-solid fa-repeat"></i></button>
-                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data<?= $nama; ?>" onclick="del_data(1, '<?= $mo->id; ?>')"><i class="fa fa-ban"></i></button>
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data<?= $nama; ?>" onclick="show_data('1', '<?= $mo->id; ?>')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data<?= $nama; ?>" onclick="del_data('1', '<?= $mo->id; ?>')"><i class="fa fa-ban"></i></button>
                   </td>
                 </tr>
               <?php $no++;
@@ -136,6 +136,7 @@
         <div class="modal-body">
           <input type="hidden" name="forParam" id="forParam" value="0">
           <div id="bodyModal"></div>
+          <input type="hidden" name="forProses" id="forProses" value="1">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
@@ -309,19 +310,25 @@
     $('#nama_modul').val(besar + kecil);
   }
 
-  function tambah(param) {
+  function tambah(param, cek) {
     $('#m_master').modal('show');
     var body = $('#bodyModal');
     body.empty('')
     forParam.val(param)
+    $('#forProses').val(cek);
     if (param == 1) {
-      $('.modal-title').text('Tambah Modul');
+      if (cek == 1) {
+        $('.modal-title').text('Tambah Modul');
+      } else {
+        $('.modal-title').text('Update Modul');
+      }
       body.append(`<div class="row">
         <div class="col-sm-12">
           <div class="form-group">
             <div class="row">
               <label class="control-label col-sm-3">Nama Modul</label>
               <div class="col-sm-9">
+                <input type="hidden" name="id_modul" id="id_modul" class="form-control">
                 <input type="text" name="nama_modul" id="nama_modul" class="form-control" onkeyup="change_name(this.value)">
               </div>
             </div>
@@ -330,12 +337,56 @@
       </div>`);
     }
   }
+
+  function show_data(param, id) {
+    if (param == 1) {
+      $.ajax({
+        url: siteUrl + 'C_modul/showData/' + param + '/' + id,
+        type: "POST",
+        dataType: "JSON",
+        success: function(result) {
+          if (result == '' || result == null) {
+            Swal.fire({
+              title: '404',
+              text: 'Tidak ada respons dari sistem',
+              icon: 'error'
+            });
+          } else {
+            if (result.response == 1) {
+              tambah(param, '2');
+
+              $('#id_modul').val(result.id);
+              $('#nama_modul').val(result.nama);
+            } else {
+              $('#m_master').modal('hide');
+
+              Swal.fire({
+                title: 'Data',
+                text: 'Tidak ditemukan!',
+                icon: 'error'
+              });
+              return;
+            }
+          }
+        },
+        error: function(result) {
+          Swal.fire({
+            title: '501',
+            text: 'Error Sistem',
+            icon: 'error'
+          })
+          return;
+        }
+      });
+    }
+  }
 </script>
 
 <!-- function proses, update, and del -->
 <script>
   function proses() {
     var param = forParam.val();
+    var forProses = $('#forProses').val();
     btnShow.hide();
     btnHide.show();
 
@@ -354,7 +405,7 @@
       }
 
       $.ajax({
-        url: siteUrl + 'C_modul/proses/' + param,
+        url: siteUrl + 'C_modul/proses/' + param + '/' + forProses,
         type: 'POST',
         data: form.serialize(),
         dataType: 'JSON',
