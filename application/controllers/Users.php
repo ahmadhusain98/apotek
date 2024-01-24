@@ -63,7 +63,7 @@ class Users extends CI_Controller
       $row[]            = $l->username;
       $row[]            = $l->nama;
       $row[]            = $l->nohp;
-      $row[]            = (($l->status_aktif > 0) ? 'Aktif' : 'Non-aktif');
+      $row[]            = '<div class="text-center">' . (($l->status_aktif > 0) ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>') . '</div>';
       $row[]            = $this->M_central->getDataRow('m_role', ['kode' => $l->kode_role])->keterangan;
       if ($l->status_aktif > 0) {
         $row[]            = '<div class="text-center">
@@ -248,7 +248,7 @@ class Users extends CI_Controller
       $row[]            = $l->username;
       $row[]            = $l->nama;
       $row[]            = $l->nohp;
-      $row[]            = (($l->status_aktif > 0) ? 'Aktif' : 'Non-aktif');
+      $row[]            = '<div class="text-center">' . (($l->status_aktif > 0) ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>') . '</div>';
       $row[]            = $this->M_central->getDataRow('m_role', ['kode' => $l->kode_role])->keterangan;
       if ($l->status_aktif > 0) {
         $row[]            = '<div class="text-center">
