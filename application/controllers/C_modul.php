@@ -45,14 +45,58 @@ class C_modul extends CI_Controller
     echo json_encode(['response' => 1]);
   }
 
-  public function l_modul()
+  public function l_modul($paramx = '')
   {
+    if ($paramx == '') {
+      $param = 1;
+    } else {
+      $param = $paramx;
+    }
+
     $data = [
       'judul' => 'Master Modul',
-      'modul' => $this->db->get('m_modul')->result(),
-      'menu' => $this->db->get('menu')->result(),
-      'submenu' => $this->db->get('sub_menu')->result(),
+      'modul' => $this->db->get('m_modul')->result_object(),
+      'menu' => $this->db->get('menu')->result_object(),
+      'submenu' => $this->db->get('sub_menu')->result_object(),
+      'tabFor' => $param,
     ];
     $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
+  }
+
+  public function proses($param)
+  {
+    if ($param == 1) {
+      $nama_modul = $this->input->post('nama_modul');
+
+      $data = [
+        'id' => last_id('m_modul', 'id'),
+        'nama' => $nama_modul,
+      ];
+
+      $table = 'm_modul';
+    }
+
+    $cek = $this->M_central->simpanData($table, $data);
+
+    if ($cek) {
+      echo json_encode(['response' => 1]);
+    } else {
+      echo json_encode(['response' => 0]);
+    }
+  }
+
+  public function deleted_proses($param, $by)
+  {
+    $cek = $this->M_central->delData('m_modul', ['id' => $by]);
+    // if ($param == 1) {
+    // } else {
+    //   $cek = false;
+    // }
+
+    if ($cek) {
+      echo json_encode(['response' => 1]);
+    } else {
+      echo json_encode(['response' => 0]);
+    }
   }
 }

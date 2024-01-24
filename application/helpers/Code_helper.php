@@ -17,3 +17,12 @@ function kode_member($param)
   }
   return $updateNumber;
 }
+
+function last_id($table, $get)
+{
+  $CI = &get_instance();
+
+  $id = $CI->db->query('SELECT ' . $get . ' FROM ' . $table . ' ORDER BY ' . $get . ' DESC LIMIT 1')->row()->$get;
+
+  return $id + 1;
+}

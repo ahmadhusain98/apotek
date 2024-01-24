@@ -145,6 +145,14 @@
             });
           }
         }
+      },
+      error: function(result) {
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        })
+        return;
       }
     })
   }

@@ -234,7 +234,7 @@
               } else {
                 Swal.fire({
                   title: 'Akun ' + username.val(),
-                  text: 'Gagak dihapus!',
+                  text: 'Gagal dihapus!',
                   icon: 'warning'
                 });
               }
