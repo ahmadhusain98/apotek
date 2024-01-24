@@ -53,12 +53,20 @@ class C_modul extends CI_Controller
       $param = $paramx;
     }
 
+    $id_modulm = $this->input->get('id_modulm');
+    if (($id_modulm == '') || ($id_modulm == null)) {
+      $menu = $this->db->get('menu')->result_object();
+    } else {
+      $menu = $this->M_central->getDataResult('menu', ['id_modul' => $id_modulm]);
+    }
+
     $data = [
       'judul' => 'Master Modul',
       'modul' => $this->db->get('m_modul')->result_object(),
-      'menu' => $this->db->get('menu')->result_object(),
+      'menu' => $menu,
       'submenu' => $this->db->get('sub_menu')->result_object(),
       'tabFor' => $param,
+      'kat_modul' => $id_modulm,
     ];
     $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
   }

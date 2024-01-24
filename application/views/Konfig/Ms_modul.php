@@ -54,7 +54,20 @@
     <div class="row" id="forTab2">
       <div class="col-sm-12">
         <div class="row mb-3">
-          <div class="col-sm-12">
+          <div class="col-sm-4">
+            <select name="kat_modul" id="kat_modul" class="form-control select2_all_standar" data-placeholder="Pilih..." onchange="cek_kat_modul(this.value)">
+              <option value="">Pilih...</option>
+              <?php foreach ($modul as $m) : ?>
+                <?php if (!empty($kat_modul)) : ?>
+                  <option value="<?= $m->id ?>" <?= (($m->id == $kat_modul) ? 'selected' : '') ?>><?= (($m->nama == "") ? "Beranda" : $m->nama) ?></option>
+                <?php else : ?>
+                  <option value="<?= $m->id ?>"><?= (($m->nama == "") ? "Beranda" : $m->nama) ?></option>
+                <?php endif; ?>
+              <?php endforeach; ?>
+              <option value="all">Semua</option>
+            </select>
+          </div>
+          <div class="col-sm-8">
             <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('2', '1')"><i class="fa fa-plus"></i> Tambah Modul</button>
           </div>
         </div>
@@ -249,6 +262,11 @@
 
   $('.select2_all').select2({
     dropdownParent: $('#m_master'),
+    width: '100%',
+    heigh: 'auto',
+  })
+
+  $('.select2_all_standar').select2({
     width: '100%',
     heigh: 'auto',
   })
@@ -476,6 +494,14 @@
         return;
       }
     });
+  }
+
+  function cek_kat_modul(id_modul) {
+    if (id_modul == 'all') {
+      location.href = siteUrl + 'C_modul/l_modul/2';
+    } else {
+      location.href = siteUrl + 'C_modul/l_modul/2' + '?id_modulm=' + id_modul;
+    }
   }
 </script>
 
