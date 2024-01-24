@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2024 at 02:00 PM
+-- Generation Time: Jan 24, 2024 at 11:11 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -44,7 +44,20 @@ INSERT INTO `menu` (`id`, `nama`, `ikon`, `url`, `id_modul`) VALUES
 (2, 'Pengguna', '<i class=\"fas fa-fw fa-solid fa-users\"></i>', 'Users', 2),
 (3, 'Pembelian', '<i class=\"fas fa-fw fa-solid fa-truck-ramp-box\"></i>', 'Pembelian', 4),
 (4, 'Ubah Posisi Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul', 3),
-(5, 'Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul/l_modul', 3);
+(5, 'Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul/l_modul', 3),
+(6, 'Umum', '<i class=\"fa-solid fa-record-vinyl\"></i>', 'Umum', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `m_kategori`
+--
+
+CREATE TABLE `m_kategori` (
+  `id` int(11) NOT NULL,
+  `kode` varchar(10) NOT NULL,
+  `nama` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -87,7 +100,11 @@ CREATE TABLE `m_role` (
 --
 
 INSERT INTO `m_role` (`id`, `kode`, `keterangan`, `tambah`, `ubah`, `hapus`) VALUES
-(1, 'R0001', 'Administrator', 1, 1, 1);
+(1, 'R0001', 'Administrator', 1, 1, 1),
+(2, 'R0002', 'Owner', 0, 0, 0),
+(3, 'R0003', 'Penanggung Jawab', 1, 1, 1),
+(4, 'R0004', 'Kasir', 1, 1, 0),
+(5, 'R0005', 'Member', 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -109,7 +126,11 @@ CREATE TABLE `role_aksi` (
 --
 
 INSERT INTO `role_aksi` (`id`, `setuju`, `tambah`, `ubah`, `hapus`, `kode_role`) VALUES
-(1, 1, 1, 1, 1, 'R0001');
+(1, 1, 1, 1, 1, 'R0001'),
+(2, 1, 0, 0, 0, 'R0002'),
+(3, 1, 1, 1, 1, 'R0003'),
+(4, 0, 1, 1, 0, 'R0004'),
+(5, 0, 1, 1, 1, 'R0005');
 
 -- --------------------------------------------------------
 
@@ -120,7 +141,6 @@ INSERT INTO `role_aksi` (`id`, `setuju`, `tambah`, `ubah`, `hapus`, `kode_role`)
 CREATE TABLE `sub_menu` (
   `id` int(11) NOT NULL,
   `nama` text NOT NULL,
-  `ikon` text NOT NULL,
   `url` text NOT NULL,
   `id_menu` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -129,10 +149,11 @@ CREATE TABLE `sub_menu` (
 -- Dumping data for table `sub_menu`
 --
 
-INSERT INTO `sub_menu` (`id`, `nama`, `ikon`, `url`, `id_menu`) VALUES
-(1, 'Pengelola', '', 'Users/pengelola', 2),
-(2, 'Member', '', 'Users/member', 2),
-(3, 'PO', '', 'Pembelian/po', 3);
+INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
+(1, 'Pengelola', 'Users/pengelola', 2),
+(2, 'Member', 'Users/member', 2),
+(3, 'PO', 'Pembelian/po', 3),
+(4, 'Kategori Barang', 'Umum/kategori', 6);
 
 -- --------------------------------------------------------
 
@@ -143,6 +164,7 @@ INSERT INTO `sub_menu` (`id`, `nama`, `ikon`, `url`, `id_menu`) VALUES
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(20) NOT NULL,
+  `sandi_ori` text NOT NULL,
   `sandi` text NOT NULL,
   `kode_member` varchar(10) NOT NULL,
   `foto` text NOT NULL DEFAULT 'default.png',
@@ -163,8 +185,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', 'default1.svg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001');
+INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
+(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001');
 
 -- --------------------------------------------------------
 
@@ -179,6 +201,13 @@ CREATE TABLE `user_aktivasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data for table `user_aktivasi`
+--
+
+INSERT INTO `user_aktivasi` (`id`, `username`, `aktivasi`) VALUES
+(1, 'admin', 1);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -186,6 +215,12 @@ CREATE TABLE `user_aktivasi` (
 -- Indexes for table `menu`
 --
 ALTER TABLE `menu`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `m_kategori`
+--
+ALTER TABLE `m_kategori`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -232,43 +267,49 @@ ALTER TABLE `user_aktivasi`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `m_kategori`
+--
+ALTER TABLE `m_kategori`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `m_modul`
 --
 ALTER TABLE `m_modul`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000000;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000002;
 
 --
 -- AUTO_INCREMENT for table `m_role`
 --
 ALTER TABLE `m_role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `role_aksi`
 --
 ALTER TABLE `role_aksi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_aktivasi`
 --
 ALTER TABLE `user_aktivasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
