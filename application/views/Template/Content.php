@@ -415,6 +415,14 @@
                   });
                 }
               }
+            },
+            error: function(result) {
+              Swal.fire({
+                title: '501',
+                text: 'Error Sistem',
+                icon: 'error'
+              })
+              return;
             }
           });
         }
@@ -432,7 +440,12 @@
   <!-- Custom scripts for all pages-->
   <script src="<?= base_url() ?>assets/js/sb-admin-2.min.js"></script>
 
-  <?php $this->load->view('datatable'); ?>
+  <?php if ($this->uri->segment(1) == 'C_modul') : ?>
+  <?php else : ?>
+
+    <?php $this->load->view('datatable'); ?>
+
+  <?php endif; ?>
 
   <script>
 
