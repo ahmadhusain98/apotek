@@ -68,7 +68,7 @@
             </select>
           </div>
           <div class="col-sm-8">
-            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('2', '1')"><i class="fa fa-plus"></i> Tambah Modul</button>
+            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('2', '1')"><i class="fa fa-plus"></i> Tambah Menu</button>
           </div>
         </div>
         <div class="table-responsive">
@@ -113,6 +113,24 @@
     </div>
     <div class="row" id="forTab3">
       <div class="col-sm-12">
+        <div class="row mb-3">
+          <div class="col-sm-4">
+            <select name="kat_menu" id="kat_menu" class="form-control select2_all_standar" data-placeholder="Pilih..." onchange="cek_kat_menu(this.value)">
+              <option value="">Pilih...</option>
+              <?php foreach ($menu as $me) : ?>
+                <?php if (!empty($kat_menu)) : ?>
+                  <option value="<?= $me->id ?>" <?= (($me->id == $kat_menu) ? 'selected' : '') ?>><?= $me->nama ?></option>
+                <?php else : ?>
+                  <option value="<?= $me->id ?>"><?= $me->nama ?></option>
+                <?php endif; ?>
+              <?php endforeach; ?>
+              <option value="all">Semua</option>
+            </select>
+          </div>
+          <div class="col-sm-8">
+            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('3', '1')"><i class="fa fa-plus"></i> Tambah Sub Menu</button>
+          </div>
+        </div>
         <div class="table-responsive">
           <table class="table table-bordered" id="tableSubMenu" width="100%" cellspacing="0">
             <thead>
@@ -131,8 +149,8 @@
                   <td><?= $sm->nama ?></td>
                   <td><?= $this->M_central->getDataRow('menu', ['id' => $sm->id_menu])->nama; ?></td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data <?= $sm->nama ?>"><i class="fa-solid fa-repeat"></i></button>
-                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data <?= $sm->nama ?>"><i class="fa fa-ban"></i></button>
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data <?= $sm->nama ?>" onclick="show_data('3', '<?= $sm->id; ?>')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data <?= $sm->nama ?>" onclick="del_data('3', '<?= $sm->id; ?>')"><i class="fa fa-ban"></i></button>
                   </td>
                 </tr>
               <?php $nos++;
@@ -223,7 +241,42 @@
               </div>
             </div>
           </div>
-          <div id="bodyModal3"></div>
+          <div id="bodyModal3">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Menu</label>
+                    <div class="col-sm-9">
+                      <select name="id_menum" id="id_menum" class="form-control select2_all" data-placeholder="Pilih...">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($menu as $me) : ?>
+                          <option value="<?= $me->id; ?>"><?= $me->nama; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Sub Menu</label>
+                    <div class="col-sm-9">
+                      <input type="hidden" name="id_submenu" id="id_submenu" class="form-control">
+                      <input type="text" name="nama_submenu" id="nama_submenu" class="form-control" onkeyup="change_name(this.value)">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Link Url</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="link_urlm" id="link_urlm" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <input type="hidden" name="forProses" id="forProses" value="1">
         </div>
         <div class="modal-footer">
@@ -423,17 +476,38 @@
     if (param == 1) {
       if (cek == 1) {
         $('.modal-title').text('Tambah Modul');
+        $('#nama_modul').val('');
       } else {
         $('.modal-title').text('Update Modul');
       }
     } else if (param == 2) {
       if (cek == 1) {
         $('.modal-title').text('Tambah Menu');
+        $('#id_modulm').empty();
+        $('#id_modulm').append(`<option value="">Pilih...</option>`);
+        $('#id_modulm').append(`<?php foreach ($modul as $m) : ?>`);
+        $('#id_modulm').append(`<option value="<?= $m->id; ?>"><?= (($m->nama == '') ? 'Beranda' : $m->nama); ?></option>`);
+        $('#id_modulm').append(`<?php endforeach; ?>`);
+        $('#nama_menu').val('');
+        $('#ikon_menu').val('');
+        $('#link_url').val('');
       } else {
         $('.modal-title').text('Update Menu');
       }
+    } else {
+      if (cek == 1) {
+        $('.modal-title').text('Tambah Sub Menu');
+        $('#id_menum').empty();
+        $('#id_menum').append(`<option value="">Pilih...</option>`);
+        $('#id_menum').append(`<?php foreach ($menu as $m) : ?>`);
+        $('#id_menum').append(`<option value="<?= $m->id; ?>"><?= $m->nama; ?></option>`);
+        $('#id_menum').append(`<?php endforeach; ?>`);
+        $('#nama_submenu').val('');
+        $('#link_urlm').val('');
+      } else {
+        $('.modal-title').text('Update Sub Menu');
+      }
     }
-
   }
 
   function show_data(param, id) {
@@ -449,7 +523,6 @@
             icon: 'error'
           });
         } else {
-          console.log(result);
           if (result.response == 1) {
             if (param == 1) {
               tambah(param, '2');
@@ -460,6 +533,7 @@
               tambah(param, '2');
 
               $('#id_modulm').empty();
+              $('#id_modulm').append(`<option value="">Pilih...</option>`);
               $('#id_modulm').append(`<?php foreach ($modul as $m) : ?>`);
               var id_md = "<?= $m->id; ?>";
               if (result.id_modul == id_md) {
@@ -472,6 +546,23 @@
               $('#nama_menu').val(result.nama);
               $('#ikon_menu').val(result.ikon);
               $('#link_url').val(result.url);
+            } else {
+              tambah(param, '2');
+
+              $('#id_menum').empty();
+              $('#id_menum').append(`<option value="">Pilih...</option>`);
+              $('#id_menum').append(`<?php foreach ($menu as $m) : ?>`);
+              var id_md = "<?= $m->id; ?>";
+              if (result.id_menu == id_md) {
+                $('#id_menum').append(`<option value="<?= $m->id; ?>" selected><?= $m->nama; ?></option>`);
+              } else {
+                $('#id_menum').append(`<option value="<?= $m->id; ?>"><?= (($m->nama == '') ? 'Beranda' : $m->nama); ?></option>`);
+              }
+              $('#id_menum').append(`<?php endforeach; ?>`);
+              $('#id_submenu').val(result.id);
+              $('#nama_submenu').val(result.nama);
+              $('#link_urlm').val(result.url);
+
             }
           } else {
             $('#m_master').modal('hide');
@@ -501,6 +592,14 @@
       location.href = siteUrl + 'C_modul/l_modul/2';
     } else {
       location.href = siteUrl + 'C_modul/l_modul/2' + '?id_modulm=' + id_modul;
+    }
+  }
+
+  function cek_kat_menu(id_menu) {
+    if (id_menu == 'all') {
+      location.href = siteUrl + 'C_modul/l_modul/3';
+    } else {
+      location.href = siteUrl + 'C_modul/l_modul/3' + '?id_menum=' + id_menu;
     }
   }
 </script>
@@ -579,6 +678,47 @@
         });
         return;
       }
+    } else {
+      var id_menum = $('#id_menum').val();
+      var nama_submenu = $('#nama_submenu').val();
+      var link_urlm = $('#link_urlm').val();
+
+      if (id_menum == '') {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: 'Menu',
+          text: 'Harus dipilih',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (nama_submenu == '') {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: 'Sub Menu',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (link_urlm == '') {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: 'Link Url',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
+
     }
 
     $.ajax({

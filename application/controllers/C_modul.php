@@ -60,13 +60,21 @@ class C_modul extends CI_Controller
       $menu = $this->M_central->getDataResult('menu', ['id_modul' => $id_modulm]);
     }
 
+    $id_menum = $this->input->get('id_menum');
+    if (($id_menum == '') || ($id_menum == null)) {
+      $submenu = $this->db->get('sub_menu')->result_object();
+    } else {
+      $submenu = $this->M_central->getDataResult('sub_menu', ['id_menu' => $id_menum]);
+    }
+
     $data = [
       'judul' => 'Master Modul',
       'modul' => $this->db->get('m_modul')->result_object(),
       'menu' => $menu,
-      'submenu' => $this->db->get('sub_menu')->result_object(),
+      'submenu' => $submenu,
       'tabFor' => $param,
       'kat_modul' => $id_modulm,
+      'kat_menu' => $id_menum,
     ];
     $this->template->load('Template/Content', 'Konfig/Ms_modul', $data);
   }
@@ -98,6 +106,19 @@ class C_modul extends CI_Controller
         ];
 
         $table = 'menu';
+      } else {
+        $id_menu = $this->input->post('id_menum');
+        $nama_submenu = $this->input->post('nama_submenu');
+        $url = $this->input->post('link_urlm');
+
+        $data = [
+          'id' => last_id('sub_menu', 'id'),
+          'nama' => $nama_submenu,
+          'url' => $url,
+          'id_menu' => $id_menu,
+        ];
+
+        $table = 'sub_menu';
       }
 
       $cek = $this->M_central->simpanData($table, $data);
@@ -127,6 +148,20 @@ class C_modul extends CI_Controller
 
         $table = 'menu';
         $where = ['id' => $id];
+      } else {
+        $id = $this->input->post('id_submenu');
+        $id_menu = $this->input->post('id_menum');
+        $nama_submenu = $this->input->post('nama_submenu');
+        $url = $this->input->post('link_urlm');
+
+        $data = [
+          'nama' => $nama_submenu,
+          'id_menu' => $id_menu,
+          'url' => $url,
+        ];
+
+        $table = 'sub_menu';
+        $where = ['id' => $id];
       }
 
       $cek = $this->M_central->updateData($table, $data, $where);
@@ -147,6 +182,8 @@ class C_modul extends CI_Controller
       $table = 'm_modul';
     } else if ($param == 2) {
       $table = 'menu';
+    } else {
+      $table = 'sub_menu';
     }
 
     $data = $this->M_central->getDataRow($table, $where);
@@ -162,9 +199,15 @@ class C_modul extends CI_Controller
       $ikon = $data->ikon;
       $url = $data->url;
       $id_modul = $data->id_modul;
-      $nama_modul =  $this->M_central->getDataRow('m_modul', ['id' => $id_modul])->nama;
 
-      echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama, 'ikon' => $ikon, 'url' => $url, 'id_modul' => $id_modul, 'nama_modul' => $nama_modul]);
+      echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama, 'ikon' => $ikon, 'url' => $url, 'id_modul' => $id_modul]);
+    } else if ($param == 3) {
+      $id = $data->id;
+      $nama = $data->nama;
+      $url = $data->url;
+      $id_menu = $data->id_menu;
+
+      echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama, 'url' => $url, 'id_menu' => $id_menu]);
     } else {
       echo json_encode(['response' => 0]);
     }
@@ -177,7 +220,7 @@ class C_modul extends CI_Controller
     } else if ($param == 2) {
       $cek = $this->M_central->delData('menu', ['id' => $by]);
     } else {
-      $cek = false;
+      $cek = $this->M_central->delData('sub_menu', ['id' => $by]);
     }
 
     if ($cek) {
