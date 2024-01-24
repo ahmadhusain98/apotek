@@ -75,6 +75,21 @@ class C_modul extends CI_Controller
         ];
 
         $table = 'm_modul';
+      } else if ($param == 2) {
+        $id_modul = $this->input->post('id_modulm');
+        $nama_menu = $this->input->post('nama_menu');
+        $ikon = $this->input->post('ikon_menu');
+        $url = $this->input->post('link_url');
+
+        $data = [
+          'id' => last_id('menu', 'id'),
+          'nama' => $nama_menu,
+          'id_modul' => $id_modul,
+          'ikon' => $ikon,
+          'url' => $url,
+        ];
+
+        $table = 'menu';
       }
 
       $cek = $this->M_central->simpanData($table, $data);
@@ -88,6 +103,22 @@ class C_modul extends CI_Controller
 
         $table = 'm_modul';
         $where = ['id' => $this->input->post('id_modul')];
+      } else if ($param == 2) {
+        $id = $this->input->post('id_menu');
+        $id_modul = $this->input->post('id_modulm');
+        $nama_menu = $this->input->post('nama_menu');
+        $ikon = $this->input->post('ikon_menu');
+        $url = $this->input->post('link_url');
+
+        $data = [
+          'nama' => $nama_menu,
+          'id_modul' => $id_modul,
+          'ikon' => $ikon,
+          'url' => $url,
+        ];
+
+        $table = 'menu';
+        $where = ['id' => $id];
       }
 
       $cek = $this->M_central->updateData($table, $data, $where);
@@ -102,9 +133,12 @@ class C_modul extends CI_Controller
 
   public function showData($param, $by)
   {
+    $where = ['id' => $by];
+
     if ($param == 1) {
       $table = 'm_modul';
-      $where = ['id' => $by];
+    } else if ($param == 2) {
+      $table = 'menu';
     }
 
     $data = $this->M_central->getDataRow($table, $where);
@@ -112,18 +146,31 @@ class C_modul extends CI_Controller
     if ($param == 1) {
       $id = $data->id;
       $nama = $data->nama;
-    }
 
-    echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama]);
+      echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama]);
+    } else if ($param == 2) {
+      $id = $data->id;
+      $nama = $data->nama;
+      $ikon = $data->ikon;
+      $url = $data->url;
+      $id_modul = $data->id_modul;
+      $nama_modul =  $this->M_central->getDataRow('m_modul', ['id' => $id_modul])->nama;
+
+      echo json_encode(['response' => 1, 'id' => $id, 'nama' => $nama, 'ikon' => $ikon, 'url' => $url, 'id_modul' => $id_modul, 'nama_modul' => $nama_modul]);
+    } else {
+      echo json_encode(['response' => 0]);
+    }
   }
 
   public function deleted_proses($param, $by)
   {
-    $cek = $this->M_central->delData('m_modul', ['id' => $by]);
-    // if ($param == 1) {
-    // } else {
-    //   $cek = false;
-    // }
+    if ($param == 1) {
+      $cek = $this->M_central->delData('m_modul', ['id' => $by]);
+    } else if ($param == 2) {
+      $cek = $this->M_central->delData('menu', ['id' => $by]);
+    } else {
+      $cek = false;
+    }
 
     if ($cek) {
       echo json_encode(['response' => 1]);

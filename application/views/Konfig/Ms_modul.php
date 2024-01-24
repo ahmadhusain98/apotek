@@ -53,12 +53,19 @@
     </div>
     <div class="row" id="forTab2">
       <div class="col-sm-12">
+        <div class="row mb-3">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-sm btn-primary float-right" onclick="tambah('2', '1')"><i class="fa fa-plus"></i> Tambah Modul</button>
+          </div>
+        </div>
         <div class="table-responsive">
           <table class="table table-bordered" id="tableMenu" width="100%" cellspacing="0">
             <thead>
               <tr>
                 <th width="5%">No</th>
                 <th>Nama Menu</th>
+                <th>Ikon</th>
+                <th>Url</th>
                 <th>Bagian Modul</th>
                 <th width="10%">Aksi</th>
               </tr>
@@ -76,10 +83,12 @@
                 <tr>
                   <td><?= $nom ?></td>
                   <td><?= $me->nama ?></td>
+                  <td class="text-center"><?= $me->ikon ?></td>
+                  <td><?= $me->url ?></td>
                   <td><?= $nama_modul ?></td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data <?= $me->nama ?>"><i class="fa-solid fa-repeat"></i></button>
-                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data <?= $me->nama ?>"><i class="fa fa-ban"></i></button>
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data <?= $me->nama ?>" onclick="show_data('2', '<?= $me->id; ?>')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data <?= $me->nama ?>" onclick="del_data('2', '<?= $me->id; ?>')"><i class="fa fa-ban"></i></button>
                   </td>
                 </tr>
               <?php $nom++;
@@ -135,7 +144,73 @@
         </div>
         <div class="modal-body">
           <input type="hidden" name="forParam" id="forParam" value="0">
-          <div id="bodyModal"></div>
+          <div id="bodyModal1">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Nama Modul</label>
+                    <div class="col-sm-9">
+                      <input type="hidden" name="id_modul" id="id_modul" class="form-control">
+                      <input type="text" name="nama_modul" id="nama_modul" class="form-control" onkeyup="change_name(this.value)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="bodyModal2">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Modul</label>
+                    <div class="col-sm-9">
+                      <select name="id_modulm" id="id_modulm" class="form-control select2_all" data-placeholder="Pilih...">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($modul as $mo) : ?>
+                          <?php
+                          if ($mo->nama == '') {
+                            $nama = 'Beranda';
+                          } else {
+                            $nama = $mo->nama;
+                          }
+                          ?>
+                          <option value="<?= $mo->id; ?>"><?= $nama; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Nama Menu</label>
+                    <div class="col-sm-9">
+                      <input type="hidden" name="id_menu" id="id_menu" class="form-control">
+                      <input type="text" name="nama_menu" id="nama_menu" class="form-control" onkeyup="change_name(this.value)">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Ikon</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="ikon_menu" id="ikon_menu" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label class="control-label col-sm-3">Link Url</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="link_url" id="link_url" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="bodyModal3"></div>
           <input type="hidden" name="forProses" id="forProses" value="1">
         </div>
         <div class="modal-footer">
@@ -171,6 +246,12 @@
     btnHide.hide()
     tab(<?= $tabFor ?>);
   });
+
+  $('.select2_all').select2({
+    dropdownParent: $('#m_master'),
+    width: '100%',
+    heigh: 'auto',
+  })
 </script>
 
 <!-- datatable -->
@@ -312,8 +393,13 @@
 
   function tambah(param, cek) {
     $('#m_master').modal('show');
-    var body = $('#bodyModal');
-    body.empty('')
+    for (var i = 1; i <= 3; i++) {
+      if (i == param) {
+        $('#bodyModal' + param).show();
+      } else {
+        $('#bodyModal' + i).hide();
+      }
+    }
     forParam.val(param)
     $('#forProses').val(cek);
     if (param == 1) {
@@ -322,63 +408,74 @@
       } else {
         $('.modal-title').text('Update Modul');
       }
-      body.append(`<div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-            <div class="row">
-              <label class="control-label col-sm-3">Nama Modul</label>
-              <div class="col-sm-9">
-                <input type="hidden" name="id_modul" id="id_modul" class="form-control">
-                <input type="text" name="nama_modul" id="nama_modul" class="form-control" onkeyup="change_name(this.value)">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`);
+    } else if (param == 2) {
+      if (cek == 1) {
+        $('.modal-title').text('Tambah Menu');
+      } else {
+        $('.modal-title').text('Update Menu');
+      }
     }
+
   }
 
   function show_data(param, id) {
-    if (param == 1) {
-      $.ajax({
-        url: siteUrl + 'C_modul/showData/' + param + '/' + id,
-        type: "POST",
-        dataType: "JSON",
-        success: function(result) {
-          if (result == '' || result == null) {
-            Swal.fire({
-              title: '404',
-              text: 'Tidak ada respons dari sistem',
-              icon: 'error'
-            });
-          } else {
-            if (result.response == 1) {
+    $.ajax({
+      url: siteUrl + 'C_modul/showData/' + param + '/' + id,
+      type: "POST",
+      dataType: "JSON",
+      success: function(result) {
+        if (result == '' || result == null) {
+          Swal.fire({
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
+            icon: 'error'
+          });
+        } else {
+          console.log(result);
+          if (result.response == 1) {
+            if (param == 1) {
               tambah(param, '2');
 
               $('#id_modul').val(result.id);
               $('#nama_modul').val(result.nama);
-            } else {
-              $('#m_master').modal('hide');
+            } else if (param == 2) {
+              tambah(param, '2');
 
-              Swal.fire({
-                title: 'Data',
-                text: 'Tidak ditemukan!',
-                icon: 'error'
-              });
-              return;
+              $('#id_modulm').empty();
+              $('#id_modulm').append(`<?php foreach ($modul as $m) : ?>`);
+              var id_md = "<?= $m->id; ?>";
+              if (result.id_modul == id_md) {
+                $('#id_modulm').append(`<option value="<?= $m->id; ?>" selected><?= (($m->nama == '') ? 'Beranda' : $m->nama); ?></option>`);
+              } else {
+                $('#id_modulm').append(`<option value="<?= $m->id; ?>"><?= (($m->nama == '') ? 'Beranda' : $m->nama); ?></option>`);
+              }
+              $('#id_modulm').append(`<?php endforeach; ?>`);
+              $('#id_menu').val(result.id);
+              $('#nama_menu').val(result.nama);
+              $('#ikon_menu').val(result.ikon);
+              $('#link_url').val(result.url);
             }
+          } else {
+            $('#m_master').modal('hide');
+
+            Swal.fire({
+              title: 'Data',
+              text: 'Tidak ditemukan!',
+              icon: 'error'
+            });
+            return;
           }
-        },
-        error: function(result) {
-          Swal.fire({
-            title: '501',
-            text: 'Error Sistem',
-            icon: 'error'
-          })
-          return;
         }
-      });
-    }
+      },
+      error: function(result) {
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        })
+        return;
+      }
+    });
   }
 </script>
 
@@ -403,72 +500,122 @@
         });
         return;
       }
+    } else if (param == 2) {
+      var id_modulm = $('#id_modulm').val();
+      var nama_menu = $('#nama_menu').val();
+      var ikon_menu = $('#ikon_menu').val();
+      var link_url = $('#link_url').val();
 
-      $.ajax({
-        url: siteUrl + 'C_modul/proses/' + param + '/' + forProses,
-        type: 'POST',
-        data: form.serialize(),
-        dataType: 'JSON',
-        success: function(result) {
-          if (result == '' || result == null) {
-            btnShow.show();
-            btnHide.hide();
-            $('#m_master').modal('hide');
+      if (id_modulm == '') {
+        btnShow.show();
+        btnHide.hide();
 
-            Swal.fire({
-              title: '404',
-              text: 'Tidak ada respons dari sistem',
-              icon: 'error'
-            }).then((result) => {
-              $('#m_master').modal('show');
-            });
-          } else {
-            if (result.response == 1) {
-              btnShow.show();
-              btnHide.hide();
-              $('#m_master').modal('hide');
+        Swal.fire({
+          title: 'Modul',
+          text: 'Harus dipilih',
+          icon: 'error'
+        });
+        return;
+      }
 
-              Swal.fire({
-                title: 'Proses',
-                text: 'Berhasil dilakukan!',
-                icon: 'success'
-              }).then((result) => {
-                if (param == 1) {
-                  location.href = siteUrl + 'C_modul/l_modul/' + param;
-                }
-                tab(param);
-              });
-            } else {
-              btnShow.show();
-              btnHide.hide();
-              $('#m_master').modal('hide');
+      if (nama_menu == '') {
+        btnShow.show();
+        btnHide.hide();
 
-              Swal.fire({
-                title: 'Proses',
-                text: 'Gagak dilakukan!',
-                icon: 'warning'
-              }).then((result) => {
-                $('#m_master').modal('show');
-              });
-            }
-          }
-        },
-        error: function(result) {
+        Swal.fire({
+          title: 'Menu',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (ikon_menu == '') {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: 'Ikon Menu',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (link_url == '') {
+        btnShow.show();
+        btnHide.hide();
+
+        Swal.fire({
+          title: 'Link Url',
+          text: 'Tidak boleh kosong',
+          icon: 'error'
+        });
+        return;
+      }
+    }
+
+    $.ajax({
+      url: siteUrl + 'C_modul/proses/' + param + '/' + forProses,
+      type: 'POST',
+      data: form.serialize(),
+      dataType: 'JSON',
+      success: function(result) {
+        if (result == '' || result == null) {
           btnShow.show();
           btnHide.hide();
           $('#m_master').modal('hide');
 
           Swal.fire({
-            title: '501',
-            text: 'Error Sistem',
+            title: '404',
+            text: 'Tidak ada respons dari sistem',
             icon: 'error'
           }).then((result) => {
             $('#m_master').modal('show');
-          })
-          return;
+          });
+        } else {
+          if (result.response == 1) {
+            btnShow.show();
+            btnHide.hide();
+            $('#m_master').modal('hide');
+
+            Swal.fire({
+              title: 'Proses',
+              text: 'Berhasil dilakukan!',
+              icon: 'success'
+            }).then((result) => {
+              location.href = siteUrl + 'C_modul/l_modul/' + param;
+            });
+          } else {
+            btnShow.show();
+            btnHide.hide();
+            $('#m_master').modal('hide');
+
+            Swal.fire({
+              title: 'Proses',
+              text: 'Gagak dilakukan!',
+              icon: 'warning'
+            }).then((result) => {
+              $('#m_master').modal('show');
+            });
+          }
         }
-      })
-    }
+      },
+      error: function(result) {
+        btnShow.show();
+        btnHide.hide();
+        $('#m_master').modal('hide');
+
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        }).then((result) => {
+          $('#m_master').modal('show');
+        })
+        return;
+      }
+    })
   }
 
   function del_data(param, id) {
@@ -502,9 +649,7 @@
                   text: 'Berhasil dihapus!',
                   icon: 'success'
                 }).then((result) => {
-                  if (param == 1) {
-                    location.href = siteUrl + 'C_modul/l_modul/' + param;
-                  }
+                  location.href = siteUrl + 'C_modul/l_modul/' + param;
                 });
               } else {
                 Swal.fire({
