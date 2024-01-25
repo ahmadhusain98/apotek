@@ -113,14 +113,25 @@
           echo '<li class="nav-item ' . $active_menu . '">';
           $cek_sub_menu = $this->db->query("SELECT * FROM sub_menu WHERE url LIKE '%$me->url%'")->num_rows();
           if ($cek_sub_menu > 0) {
-            $sub_menu = $this->db->get_where("sub_menu", ["id_menu" => $me->id])->result();
             $no = 1;
-            echo '<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse' . $me->nama . '" aria-expanded="true" aria-controls="collapsePages">
+            $cek_sm = $this->db->query("SELECT * FROM menu WHERE id_modul = '$mo->id' AND id IN (SELECT id_menu FROM sub_menu)")->num_rows();
+            if ($cek_sm > 1) {
+              $first_sm = $this->db->query("SELECT * FROM menu WHERE id_modul = '$mo->id' ORDER BY id ASC LIMIT 1")->row();
+              if ($me->id == $first_sm->id) {
+                $stylePad = '';
+              } else {
+                $stylePad = 'style="margin-top: -15px"';
+              }
+            } else {
+              $stylePad = '';
+            }
+            echo '<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse' . $me->nama . '" aria-expanded="true" aria-controls="collapsePages" ' . $stylePad . '>
                 ' . $me->ikon . ' <span>' . $me->nama . '</span>
               </a>';
             echo '<div id="collapse' . $me->nama . '" class="collapse" aria-labelledby="heading' . $me->nama . '" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">' . $me->nama . ':</h6>';
+            $sub_menu = $this->db->get_where("sub_menu", ["id_menu" => $me->id])->result();
             foreach ($sub_menu as $sm) {
               echo '<a class="collapse-item" type="button" onclick="get_menu(' . "'" . $sm->url . "'" . ')">' . $sm->nama . '</a>';
               $no++;
