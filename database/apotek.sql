@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 24, 2024 at 11:11 AM
+-- Generation Time: Jan 25, 2024 at 02:56 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -42,10 +42,14 @@ CREATE TABLE `menu` (
 INSERT INTO `menu` (`id`, `nama`, `ikon`, `url`, `id_modul`) VALUES
 (1, 'Beranda', '<i class=\"fas fa-fw fa-tachometer-alt\"></i>', 'Dashboard', 1),
 (2, 'Pengguna', '<i class=\"fas fa-fw fa-solid fa-users\"></i>', 'Users', 2),
-(3, 'Pembelian', '<i class=\"fas fa-fw fa-solid fa-truck-ramp-box\"></i>', 'Pembelian', 4),
+(3, 'Pembelian', '<i class=\"fas fa-fw fa-solid fa-truck-ramp-box\"></i>', 'Pembelian', 6),
 (4, 'Ubah Posisi Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul', 3),
 (5, 'Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul/l_modul', 3),
-(6, 'Umum', '<i class=\"fa-solid fa-record-vinyl\"></i>', 'Umum', 2);
+(6, 'Umum', '<i class=\"fa-solid fa-record-vinyl\"></i>', 'Umum', 2),
+(7, 'Aktivasi Akun', '<i class=\"fa-solid fa-user-check\"></i>', 'Aktifasi', 4),
+(8, 'Barang', '<i class=\"fa-solid fa-boxes-stacked\"></i>', 'Barang', 2),
+(9, 'Penjualan', '<i class=\"fa-solid fa-money-bill-transfer\"></i>', 'Penjualan', 7),
+(10, 'Laporan', '<i class=\"fa-solid fa-chart-pie\"></i>', 'Laporan', 8);
 
 -- --------------------------------------------------------
 
@@ -75,10 +79,14 @@ CREATE TABLE `m_modul` (
 --
 
 INSERT INTO `m_modul` (`id`, `nama`) VALUES
-(1, ''),
+(1, 'Beranda'),
 (2, 'Master'),
 (3, 'Pengaturan'),
-(4, 'Barang Masuk');
+(4, 'Keamanan'),
+(5, 'Pembayaran'),
+(6, 'Barang Masuk'),
+(7, 'Barang Keluar'),
+(8, 'Laporan');
 
 -- --------------------------------------------------------
 
@@ -105,6 +113,18 @@ INSERT INTO `m_role` (`id`, `kode`, `keterangan`, `tambah`, `ubah`, `hapus`) VAL
 (3, 'R0003', 'Penanggung Jawab', 1, 1, 1),
 (4, 'R0004', 'Kasir', 1, 1, 0),
 (5, 'R0005', 'Member', 1, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `m_satuan`
+--
+
+CREATE TABLE `m_satuan` (
+  `id` int(11) NOT NULL,
+  `kode` varchar(10) NOT NULL,
+  `nama` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -153,7 +173,15 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (1, 'Pengelola', 'Users/pengelola', 2),
 (2, 'Member', 'Users/member', 2),
 (3, 'PO', 'Pembelian/po', 3),
-(4, 'Kategori Barang', 'Umum/kategori', 6);
+(4, 'Kategori Barang', 'Umum/kategori', 6),
+(5, 'Satuan Barang', 'Umum/satuan', 6),
+(6, 'Penerimaan Barang', 'Pembelian/penerimaan', 3),
+(7, 'Retur Barang', 'Pembelian/retur', 3),
+(8, 'Jual', 'Penjualan/jual', 9),
+(9, 'Retur', 'Penjualan/retur', 9),
+(10, 'Pengguna', 'Laporan/pengguna', 10),
+(11, 'Laporan', 'Pembelian/laporan', 3),
+(12, 'Laporan', 'Penjualan/laporan', 9);
 
 -- --------------------------------------------------------
 
@@ -186,7 +214,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
-(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001');
+(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001'),
+(5, 'ahmadhusain', '', '0a61eae58bcb5869aee9c0ba6753180a', 'A000000002', 'default1.svg', 'P', 'Ahmad Husain', '-', '123', 'ahmad@gmail.com', '2024-01-24', 0, 0, '1998-05-02', 'jakarta', 'R0005'),
+(6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005');
 
 -- --------------------------------------------------------
 
@@ -205,7 +235,9 @@ CREATE TABLE `user_aktivasi` (
 --
 
 INSERT INTO `user_aktivasi` (`id`, `username`, `aktivasi`) VALUES
-(1, 'admin', 1);
+(1, 'admin', 1),
+(5, 'ahmadhusain', 0),
+(6, 'user', 0);
 
 --
 -- Indexes for dumped tables
@@ -233,6 +265,12 @@ ALTER TABLE `m_modul`
 -- Indexes for table `m_role`
 --
 ALTER TABLE `m_role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `m_satuan`
+--
+ALTER TABLE `m_satuan`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -267,7 +305,7 @@ ALTER TABLE `user_aktivasi`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `m_kategori`
@@ -288,6 +326,12 @@ ALTER TABLE `m_role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `m_satuan`
+--
+ALTER TABLE `m_satuan`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `role_aksi`
 --
 ALTER TABLE `role_aksi`
@@ -297,19 +341,19 @@ ALTER TABLE `role_aksi`
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `user_aktivasi`
 --
 ALTER TABLE `user_aktivasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
