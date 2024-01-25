@@ -26,23 +26,21 @@ class C_modul extends CI_Controller
     $idDari = $this->input->post("idDari");
     $idKe = $this->input->post("idKe");
 
-    $menuDari = $this->db->get_where('menu', ['id_modul' => $idDari])->result();
-    $menuKe = $this->db->get_where('menu', ['id_modul' => $idKe])->result();
+    $cek = [
+      $this->M_central->updateData('menu', ['id_modul' => 999999], ['id_modul' => $idKe]),
+      $this->M_central->updateData('menu', ['id_modul' => $idKe], ['id_modul' => $idDari]),
+      $this->M_central->updateData('menu', ['id_modul' => $idDari], ['id_modul' => 999999]),
 
-    foreach ($menuDari as $md) {
-      $idMenu = $md->id;
-      $this->M_central->updateData('m_modul', ['id' => 999999], ['id' => $idDari]);
-      $this->M_central->updateData('menu', ['id_modul' => $idKe], ['id' => $idMenu]);
+      $this->M_central->updateData('m_modul', ['id' => 999999], ['id' => $idKe]),
+      $this->M_central->updateData('m_modul', ['id' => $idKe], ['id' => $idDari]),
+      $this->M_central->updateData('m_modul', ['id' => $idDari], ['id' => 999999]),
+    ];
+
+    if ($cek) {
+      echo json_encode(['response' => 1]);
+    } else {
+      echo json_encode(['response' => 0]);
     }
-
-    foreach ($menuKe as $mk) {
-      $idMenu = $mk->id;
-      $this->M_central->updateData('m_modul', ['id' => $idDari], ['id' => $idKe]);
-      $this->M_central->updateData('m_modul', ['id' => $idKe], ['id' => 999999]);
-      $this->M_central->updateData('menu', ['id_modul' => $idDari], ['id' => $idMenu]);
-    }
-
-    echo json_encode(['response' => 1]);
   }
 
   public function l_modul($paramx = '')
