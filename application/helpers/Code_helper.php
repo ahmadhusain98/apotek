@@ -1,4 +1,15 @@
 <?php
+function hitung($date)
+{
+  $day = date("d", strtotime($date));
+  $month = date("m", strtotime($date));
+  $year = date("Y", strtotime($date));
+
+  $days = (int)((mktime(0, 0, 0, $month, $day, $year) - time()) / 86400);
+
+  return $days;
+}
+
 function kode_member($param)
 {
   $CI           = &get_instance();
