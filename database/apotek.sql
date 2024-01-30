@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2024 at 02:56 PM
+-- Generation Time: Jan 30, 2024 at 11:17 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -49,7 +49,10 @@ INSERT INTO `menu` (`id`, `nama`, `ikon`, `url`, `id_modul`) VALUES
 (7, 'Aktivasi Akun', '<i class=\"fa-solid fa-user-check\"></i>', 'Aktifasi', 4),
 (8, 'Barang', '<i class=\"fa-solid fa-boxes-stacked\"></i>', 'Barang', 2),
 (9, 'Penjualan', '<i class=\"fa-solid fa-money-bill-transfer\"></i>', 'Penjualan', 7),
-(10, 'Laporan', '<i class=\"fa-solid fa-chart-pie\"></i>', 'Laporan', 8);
+(10, 'Stok Persediaan', '<i class=\"fa-solid fa-chart-pie\"></i>', 'Stok', 8),
+(11, 'Kasir', '<i class=\"fa-solid fa-cash-register\"></i>', 'Kasir', 5),
+(12, 'Deposit', '<i class=\"fa-solid fa-money-bill-transfer\"></i>', 'Deposit', 5),
+(13, 'Cabang', '<i class=\"fa-solid fa-building-circle-check\"></i>', 'Cabang', 2);
 
 -- --------------------------------------------------------
 
@@ -129,6 +132,32 @@ CREATE TABLE `m_satuan` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `m_unit`
+--
+
+CREATE TABLE `m_unit` (
+  `id` int(11) NOT NULL,
+  `kode_unit` varchar(10) NOT NULL,
+  `nama_unit` text NOT NULL,
+  `foto` text NOT NULL,
+  `alamat` text NOT NULL,
+  `kontak` varchar(200) NOT NULL,
+  `penanggungjawab` varchar(200) NOT NULL,
+  `tgl_mulai` date NOT NULL,
+  `tgl_selesai` date NOT NULL,
+  `status_unit` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `m_unit`
+--
+
+INSERT INTO `m_unit` (`id`, `kode_unit`, `nama_unit`, `foto`, `alamat`, `kontak`, `penanggungjawab`, `tgl_mulai`, `tgl_selesai`, `status_unit`) VALUES
+(1, 'DIY', 'Yogyakarta', '', 'Yogyakarta, Jl. Magelang', '000123', 'Ahmad Husain', '2024-01-30', '2025-01-30', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `role_aksi`
 --
 
@@ -179,9 +208,12 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (7, 'Retur Barang', 'Pembelian/retur', 3),
 (8, 'Jual', 'Penjualan/jual', 9),
 (9, 'Retur', 'Penjualan/retur', 9),
-(10, 'Pengguna', 'Laporan/pengguna', 10),
 (11, 'Laporan', 'Pembelian/laporan', 3),
-(12, 'Laporan', 'Penjualan/laporan', 9);
+(12, 'Laporan', 'Penjualan/laporan', 9),
+(13, 'Bayar', 'Kasir/bayar', 11),
+(14, 'Retur', 'Kasir/retur', 11),
+(15, 'Unit', 'Cabang/unit', 13),
+(16, 'Pengelola Unit', 'Cabang/pengelola', 13);
 
 -- --------------------------------------------------------
 
@@ -274,6 +306,12 @@ ALTER TABLE `m_satuan`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `m_unit`
+--
+ALTER TABLE `m_unit`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `role_aksi`
 --
 ALTER TABLE `role_aksi`
@@ -305,7 +343,7 @@ ALTER TABLE `user_aktivasi`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `m_kategori`
@@ -332,6 +370,12 @@ ALTER TABLE `m_satuan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `m_unit`
+--
+ALTER TABLE `m_unit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `role_aksi`
 --
 ALTER TABLE `role_aksi`
@@ -341,7 +385,7 @@ ALTER TABLE `role_aksi`
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user`
