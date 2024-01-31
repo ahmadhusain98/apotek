@@ -92,6 +92,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="hidden" name="name_foto" id="name_foto" value="default.png">
+                                    <img id="preview_img" src="<?= base_url() ?>assets/img/unit/default.png" class="card-img-top p-3" width="50vh" style="border-radius: 25px;">
+                                </div>
+                                <div class="col-md-9 my-auto">
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="foto_profil" name="foto_profil" aria-describedby="inputGroupFileAddon01">
+                                            <label class="custom-file-label" for="inputGroupFile01">Cari Foto</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
@@ -113,6 +131,7 @@
     var btnShow = $('#btnShow');
     var btnHide = $('#btnHide');
     var title = $('.modal-title');
+    var id = $('#id');
     var kode_unit = $('#kode_unit');
     var nama_unit = $('#nama_unit');
     var penanggungjawab = $('#penanggungjawab');
@@ -120,9 +139,10 @@
     var tgl_mulai = $('#tgl_mulai');
     var tgl_selesai = $('#tgl_selesai');
     var alamat = $('#alamat');
+    var name_foto = $('#name_foto');
     var prosesx = $('#prosesx');
 
-    const form = $('#formUnit');
+    const form = $('#formUnit')[0];
 
     // onload first
     $(document).ready(function() {
@@ -130,9 +150,32 @@
     });
 
     // another function
+    // when photo has been change
+    $("#foto_profil").change(function() {
+        readURL(this);
+    });
+
+    // preview image
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#div_preview_foto').css("display", "block");
+                $('#preview_img').attr('src', e.target.result);
+                name_foto.val(input.files[0].name);
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            $('#div_preview_foto').css("display", "none");
+            $('#preview_img').attr('src', '');
+            name_foto.val('default.png');
+        }
+    }
+
     function add_unit() {
         title.text('Tambah Unit');
         $('#mod_unit').modal('show');
+        id.val('');
         kode_unit.val('');
         nama_unit.val('');
         penanggungjawab.val('');
@@ -142,10 +185,70 @@
         alamat.val('');
     }
 
+    function updated(kode_unitx) {
+        var data = new FormData(form);
+
+        $.ajax({
+            url: siteUrl + 'Cabang/get_unit/' + kode_unitx,
+            type: "POST",
+            enctype: 'multipart/form-data',
+            data: data,
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function(result) {
+                if (result == '' || result == null) {
+                    btnShow.show();
+                    btnHide.hide();
+
+                    Swal.fire({
+                        title: '404',
+                        text: 'Tidak ada respons dari sistem',
+                        icon: 'error'
+                    });
+                    return;
+                } else {
+                    btnShow.show();
+                    btnHide.hide();
+
+                    $('.modal-title').text('Update Unit');
+
+                    $('#mod_unit').modal('show');
+                    id.val(result.id);
+                    kode_unit.val(kode_unitx);
+                    nama_unit.val(result.nama_unit);
+                    penanggungjawab.val(result.penanggungjawab);
+                    kontak.val(result.kontak);
+                    tgl_mulai.val(result.tgl_mulai);
+                    tgl_selesai.val(result.tgl_selesai);
+                    alamat.val(result.alamat);
+                    name_foto.val(result.foto);
+                    document.getElementById('preview_img').src = siteUrl + 'assets/img/unit/' + result.foto;
+                    prosesx.val(2);
+                }
+            },
+            error: function(result) {
+                btnShow.show();
+                btnHide.hide();
+
+                Swal.fire({
+                    title: '501',
+                    text: 'Error Sistem',
+                    icon: 'error'
+                })
+                return;
+            }
+        });
+    }
+
     // function proses, and delete
     function proses() {
         btnShow.hide();
         btnHide.show();
+
+        var data = new FormData(form);
 
         var proses_ = prosesx.val();
         $('#mod_unit').modal('hide');
@@ -258,9 +361,14 @@
 
         $.ajax({
             url: siteUrl + 'Cabang/add_unit_proses/' + proses_,
-            type: 'POST',
-            data: form.serialize(),
-            dataType: 'JSON',
+            type: "POST",
+            enctype: 'multipart/form-data',
+            data: data,
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
             success: function(result) {
                 if (result == '' || result == null) {
                     btnShow.show();
@@ -292,7 +400,7 @@
 
                         Swal.fire({
                             title: 'Unit ' + nama_unit.val(),
-                            text: 'Gagak ' + pesan_error,
+                            text: 'Gagal ' + pesan_error,
                             icon: 'warning'
                         }).then((value) => {
                             $('#mod_unit').modal('show');
@@ -310,6 +418,61 @@
                     icon: 'error'
                 })
                 return;
+            }
+        });
+    }
+
+    function deleted(kode_unitx) {
+        Swal.fire({
+            title: "Anda yakin?",
+            text: "Data yang dihapus tidak bisa di kembalikan!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Tidak"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: siteUrl + 'Cabang/deleted_unit_proses/' + kode_unitx,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    success: function(result) {
+                        if (result == '' || result == null) {
+                            Swal.fire({
+                                title: '404',
+                                text: 'Tidak ada respons dari sistem',
+                                icon: 'error'
+                            })
+                            return;
+                        } else {
+                            if (result.response == 1) {
+                                Swal.fire({
+                                    title: 'Unit ' + kode_unitx,
+                                    text: 'Berhasil dihapus!',
+                                    icon: 'success'
+                                }).then((result) => {
+                                    location.href = siteUrl + 'Cabang/unit';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Unit ' + kode_unitx,
+                                    text: 'Gagal dihapus!',
+                                    icon: 'warning'
+                                });
+                            }
+                        }
+                    },
+                    error: function(result) {
+                        Swal.fire({
+                            title: '501',
+                            text: 'Error Sistem',
+                            icon: 'error'
+                        })
+                        return;
+                    }
+                });
             }
         });
     }
