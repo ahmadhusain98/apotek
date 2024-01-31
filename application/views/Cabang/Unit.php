@@ -97,7 +97,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <input type="hidden" name="name_foto" id="name_foto" value="default.png">
-                                    <img id="preview_img" src="<?= base_url() ?>assets/img/unit/default.png" class="card-img-top p-3" width="50vh" style="border-radius: 25px;">
+                                    <img id="preview_img" src="<?= base_url() ?>../assets/img/unit/default.png" class="card-img-top p-3" width="50vh" style="border-radius: 25px;">
                                 </div>
                                 <div class="col-md-9 my-auto">
                                     <div class="input-group">
@@ -225,7 +225,7 @@
                     tgl_selesai.val(result.tgl_selesai);
                     alamat.val(result.alamat);
                     name_foto.val(result.foto);
-                    document.getElementById('preview_img').src = siteUrl + 'assets/img/unit/' + result.foto;
+                    document.getElementById('preview_img').src = siteUrl + '../assets/img/unit/' + result.foto;
                     prosesx.val(2);
                 }
             },

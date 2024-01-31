@@ -64,7 +64,7 @@ class Cabang extends CI_Controller
             $row              = [];
 
             $row[]            = '<div class="text-right">' . $no . '</div>';
-            $row[]            = '<div class="text-center">' . '<img src="' . base_url() . 'assets/img/unit/' . $l->foto . '" class="card-img-top p-3" style="border-radius: 25px; width: 100px;">' . '<br>' . $l->kode_unit . '</div>';
+            $row[]            = '<div class="text-center">' . '<img src="' . base_url() . '../assets/img/unit/' . $l->foto . '" class="card-img-top p-3" style="border-radius: 25px; width: 100px;">' . '<br>' . $l->kode_unit . '</div>';
             $row[]            = $l->nama_unit;
             $row[]            = $l->alamat;
             $row[]            = $l->penanggungjawab;
@@ -132,7 +132,7 @@ class Cabang extends CI_Controller
         $tgl_selesai = $this->input->post('tgl_selesai');
         $alamat = $this->input->post('alamat');
 
-        $config['upload_path'] = 'assets/img/unit/';
+        $config['upload_path'] = '../assets/img/unit/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = '2048';
         $this->load->library('upload', $config);
@@ -174,7 +174,7 @@ class Cabang extends CI_Controller
 
         if ($data->foto == 'default.png') {
         } else {
-            $lokasi = 'assets/img/unit/' . $data->foto;
+            $lokasi = '../assets/img/unit/' . $data->foto;
             if (file_exists($lokasi)) {
                 unlink($lokasi);
             }
