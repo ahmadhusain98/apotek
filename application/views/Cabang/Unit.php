@@ -123,6 +123,18 @@
             </div>
         </div>
     </div>
+
+    <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0; height: 200px;">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <strong class="mr-auto text-primary">Informasi</strong>
+                <small class="text-danger"> Cabang dengan status <i><b>aktif</b></i></small>
+            </div>
+            <div class="toast-body">
+                Tidak dapat dihapus!
+            </div>
+        </div>
+    </div>
 </form>
 
 <script>
@@ -241,6 +253,10 @@
                 return;
             }
         });
+    }
+
+    function forInfo() {
+        $('#liveToast').toast('show')
     }
 
     // function proses, and delete

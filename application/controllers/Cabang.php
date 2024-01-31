@@ -69,39 +69,50 @@ class Cabang extends CI_Controller
             $row[]            = $l->alamat;
             $row[]            = $l->penanggungjawab;
             $row[]            = $l->kontak;
-            $row[]            = '<div class="text-center">' . (($l->status_unit > 0) ? '<span class="badge badge-success">Aktif ' . hitung($l->tgl_selesai) . ' Hari</span>' : '<span class="badge badge-secondary">Non-aktif</span>') . '</div>';
-            $row[]            = '<div class="text-center">
+            $hari             = hitung($l->tgl_selesai);
+            if ($hari >= 90) {
+                $color = 'success';
+            } else if ($hari >= 60 && $hari <= 90) {
+                $color = 'warning';
+            } else {
+                $color = 'danger';
+            }
+            if ($hari < 1) {
+                $text = 'Tidak aktif';
+                $hitung = 0;
+            } else {
+                $text = 'Aktif';
+                $hitung = $hari;
+            }
+            $row[]            = '<div class="text-center">' . (($l->status_unit > 0) ? '<span class="badge badge-' . $color . '">' . $text . ' ' . $hitung . ' Hari</span>' : '<span class="badge badge-secondary">Non-aktif</span>') . '</div>';
+            if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
+                if ($l->status_unit > 0) {
+                    $row[]            = '<div class="text-center">
+                        <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" onclick="updated(' . "'" . $l->kode_unit . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
+                    </div>';
+                } else {
+                    $row[]            = '<div class="text-center">
                         <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" onclick="updated(' . "'" . $l->kode_unit . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
                         <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" onclick="deleted(' . "'" . $l->kode_unit . "'" . ')"><i class="fa fa-ban"></i></button>
                     </div>';
-            // if ($l->status_unit > 0) {
-            //     $row[]            = '<div class="text-center">
-            //         <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" disabled><i class="fa-solid fa-repeat"></i></button>
-            //         <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
-            //     </div>';
-            // } else {
-            //     if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
-            //         $row[]            = '<div class="text-center">
-            //             <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" onclick="updated(' . "'" . $l->kode_unit . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
-            //             <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" onclick="deleted(' . "'" . $l->kode_unit . "'" . ')"><i class="fa fa-ban"></i></button>
-            //         </div>';
-            //     } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
-            //         $row[]            = '<div class="text-center">
-            //             <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" onclick="updated(' . "'" . $l->kode_unit . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
-            //             <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
-            //         </div>';
-            //     } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
-            //         $row[]            = '<div class="text-center">
-            //             <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" disabled><i class="fa-solid fa-repeat"></i></button>
-            //             <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
-            //         </div>';
-            //     } else {
-            //         $row[]            = '<div class="text-center">
-            //             <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" disabled><i class="fa-solid fa-repeat"></i></button>
-            //             <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" onclick="deleted(' . "'" . $l->kode_unit . "'" . ')"><i class="fa fa-ban"></i></button>
-            //         </div>';
-            //     }
-            // }
+                }
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" onclick="updated(' . "'" . $l->kode_unit . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama_unit . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->kode_unit . '" onclick="deleted(' . "'" . $l->kode_unit . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            }
 
             $data[]           = $row;
             $no++;
@@ -132,6 +143,13 @@ class Cabang extends CI_Controller
         $tgl_selesai = $this->input->post('tgl_selesai');
         $alamat = $this->input->post('alamat');
 
+        $date_now = date('Y-m-d');
+        if (strtotime($tgl_selesai) >= strtotime($date_now)) {
+            $status_unit = 1;
+        } else {
+            $status_unit = 0;
+        }
+
         $config['upload_path'] = '../assets/img/unit/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = '2048';
@@ -153,6 +171,7 @@ class Cabang extends CI_Controller
             'tgl_mulai' => $tgl_mulai,
             'tgl_selesai' => $tgl_selesai,
             'alamat' => $alamat,
+            'status_unit' => $status_unit,
         ];
 
         if ($param == 1) {
