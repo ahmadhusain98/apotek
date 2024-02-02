@@ -207,4 +207,59 @@ class Cabang extends CI_Controller
             echo json_encode(['response' => 0]);
         }
     }
+
+    /*
+    MASTER PENGELOLA
+    */
+
+    public function pengelola()
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $now = date('Y-m-d');
+        $cabang = $this->M_central->getDataResult('m_unit', ['tgl_selesai >= ' => $now]);
+        $data = [
+            'judul' => 'Pengelola Unit',
+            $this->data,
+            'table' => $this->M_central->getDataResult('user', ['kode_role <> ' => 'R0005']),
+            'm_role' => $this->M_central->getResult('m_role'),
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+            'cabang' => $cabang,
+        ];
+
+        $this->template->load('Template/Content', 'Cabang/Pengelola', $data);
+    }
+
+    public function del_cabang($kode_unit, $username)
+    {
+        $where = [
+            'username' => $username,
+            'kode_unit' => $kode_unit,
+        ];
+        $cek = [
+            $this->db->where($where),
+            $this->db->delete("akses_unit"),
+        ];
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function add_cabang($kode_unit, $username)
+    {
+        $data = [
+            'username' => $username,
+            'kode_unit' => $kode_unit,
+        ];
+        $cek = $this->db->insert("akses_unit", $data);
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
 }
