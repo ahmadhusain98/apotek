@@ -77,7 +77,10 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fa-solid fa-prescription-bottle-medical"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Apotek <sup>v 0.1</sup></div>
+        <?php
+        $cabang = $this->session->userdata('kode_unit');
+        ?>
+        <div class="sidebar-brand-text mx-3">Apotek <sup class="badge badge-light"><?= $cabang ?></sup></div>
       </a>
 
       <?php
@@ -316,6 +319,8 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Shift Kerja: <?= $this->session->userdata('shift') ?>
+                <div class="topbar-divider d-none d-sm-block"></div>
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->nama; ?></span>
                 <img class="img-profile rounded-circle" src="<?= base_url() ?>../assets/img/user/<?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->foto; ?>">
               </a>

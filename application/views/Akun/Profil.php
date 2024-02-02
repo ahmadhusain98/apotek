@@ -10,7 +10,7 @@
                     <div class="row mb-3">
                         <div class="col-sm-12">
                             <div class="card shadow" style="width: auto;">
-                                <img id="preview_img" src="<?= base_url() ?>assets/img/user/<?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->foto; ?>" class="card-img-top p-3" width="150vh" style="border-radius: 25px;">
+                                <img id="preview_img" src="<?= base_url() ?>../assets/img/user/<?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->foto; ?>" class="card-img-top p-3" width="150vh" style="border-radius: 25px;">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item text-center text-primary" style="font-size: 14px; font-weight: bold;">
                                         <?= $this->M_central->getDataRow('m_role', ['kode' => $userdata->kode_role])->keterangan ?>
