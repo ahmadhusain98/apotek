@@ -126,6 +126,7 @@
         $('.modal-title').text('Tambah Vendor');
         id.val('');
         kode.val('');
+        kode.attr('disabled', false);
         nama.val('');
         nohp.val('');
         email.val('');
@@ -144,6 +145,7 @@
                 $('.modal-title').text('Update Vendor');
                 id.val(idx);
                 kode.val(result.kode);
+                kode.attr('disabled', true);
                 nama.val(result.nama);
                 nohp.val(result.nohp);
                 email.val(result.email);

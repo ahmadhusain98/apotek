@@ -193,6 +193,7 @@
         $('#mod_unit').modal('show');
         id.val('');
         kode_unit.val('');
+        kode_unit.attr('disabled', false);
         nama_unit.val('');
         penanggungjawab.val('');
         kontak.val('');
@@ -234,6 +235,7 @@
                     $('#mod_unit').modal('show');
                     id.val(result.id);
                     kode_unit.val(kode_unitx);
+                    kode_unit.attr('disabled', true);
                     nama_unit.val(result.nama_unit);
                     penanggungjawab.val(result.penanggungjawab);
                     kontak.val(result.kontak);
