@@ -57,7 +57,7 @@ class Umum extends CI_Controller
             $row[]            = $l->alamat;
             $row[]            = $l->nohp;
             $row[]            = $l->email;
-            $row[]            = $l->trx_terakhir;
+            $row[]            = (($l->trx_terakhir == '0000-00-00 00:00:00') ? 'Belum ada transaksi' : date('D, m-Y | H:i', strtotime($l->trx_terakhir)));
             $row[]            = $status;
             if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0) && ($cek_aksi_role->setuju > 0)) {
                 $row[]            = '<div class="text-center">
