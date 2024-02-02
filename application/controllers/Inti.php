@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Umum extends CI_Controller
+class Inti extends CI_Controller
 {
     function __construct()
     {
@@ -26,10 +26,10 @@ class Umum extends CI_Controller
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
         $data = [
             'judul' => 'Kategori Barang',
-            'list_ajax' => 'Umum/list_kategori',
+            'list_ajax' => 'Inti/list_kategori',
             'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
         ];
-        $this->template->load('Template/Content', 'Umum/Kategori', $data);
+        $this->template->load('Template/Content', 'Inti/Kategori', $data);
     }
 
     public function list_kategori()
@@ -143,10 +143,10 @@ class Umum extends CI_Controller
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
         $data = [
             'judul' => 'Satuan Barang',
-            'list_ajax' => 'Umum/list_satuan',
+            'list_ajax' => 'Inti/list_satuan',
             'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
         ];
-        $this->template->load('Template/Content', 'Umum/Satuan', $data);
+        $this->template->load('Template/Content', 'Inti/Satuan', $data);
     }
 
     public function list_satuan()
