@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 02, 2024 at 12:44 PM
+-- Generation Time: Feb 02, 2024 at 07:08 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -67,14 +67,14 @@ INSERT INTO `menu` (`id`, `nama`, `ikon`, `url`, `id_modul`) VALUES
 (3, 'Pembelian', '<i class=\"fas fa-fw fa-solid fa-truck-ramp-box\"></i>', 'Pembelian', 6),
 (4, 'Ubah Posisi Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul', 3),
 (5, 'Modul', '<i class=\"fas fa-fw fa-solid fa-bars\"></i>', 'C_modul/l_modul', 3),
-(6, 'Umum', '<i class=\"fa-solid fa-record-vinyl\"></i>', 'Umum', 2),
+(6, 'Inti', '<i class=\"fa-solid fa-record-vinyl\"></i>', 'Inti', 2),
 (7, 'Aktivasi Akun', '<i class=\"fa-solid fa-user-check\"></i>', 'Aktifasi', 4),
-(8, 'Barang', '<i class=\"fa-solid fa-boxes-stacked\"></i>', 'Barang', 2),
 (9, 'Penjualan', '<i class=\"fa-solid fa-money-bill-transfer\"></i>', 'Penjualan', 7),
 (10, 'Stok Persediaan', '<i class=\"fa-solid fa-chart-pie\"></i>', 'Stok', 8),
 (11, 'Kasir', '<i class=\"fa-solid fa-cash-register\"></i>', 'Kasir', 5),
 (12, 'Deposit', '<i class=\"fa-solid fa-money-bill-transfer\"></i>', 'Deposit', 5),
-(13, 'Cabang', '<i class=\"fa-solid fa-building-circle-check\"></i>', 'Cabang', 2);
+(13, 'Cabang', '<i class=\"fa-solid fa-building-circle-check\"></i>', 'Cabang', 2),
+(14, 'Umum', '<i class=\"fa-solid fa-globe\"></i>', 'Umum', 2);
 
 -- --------------------------------------------------------
 
@@ -154,6 +154,25 @@ CREATE TABLE `m_satuan` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `m_tempo`
+--
+
+CREATE TABLE `m_tempo` (
+  `id` int(11) NOT NULL,
+  `keterangan` text NOT NULL,
+  `hitung` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `m_tempo`
+--
+
+INSERT INTO `m_tempo` (`id`, `keterangan`, `hitung`) VALUES
+(2, 'Tempo 1 Minggu', 7);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `m_unit`
 --
 
@@ -177,6 +196,23 @@ CREATE TABLE `m_unit` (
 INSERT INTO `m_unit` (`id`, `kode_unit`, `nama_unit`, `foto`, `alamat`, `kontak`, `penanggungjawab`, `tgl_mulai`, `tgl_selesai`, `status_unit`) VALUES
 (7, 'DIY', 'Yogyakarta', 'default.png', 'Yogyakarta, Jl. Magelang', '00123', 'Ahmad Husain', '2023-01-01', '2024-03-01', 1),
 (8, 'MGL', 'Magelang', 'default.png', 'Magelang, Jl. Borobudur', '000123', 'Ardi', '2024-01-01', '2025-01-01', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `m_vendor`
+--
+
+CREATE TABLE `m_vendor` (
+  `id` int(11) NOT NULL,
+  `kode` varchar(10) NOT NULL,
+  `nama` varchar(200) NOT NULL,
+  `alamat` text NOT NULL,
+  `nohp` varchar(15) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `trx_terakhir` datetime NOT NULL,
+  `status` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -225,8 +261,8 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (1, 'Pengelola', 'Users/pengelola', 2),
 (2, 'Member', 'Users/member', 2),
 (3, 'PO', 'Pembelian/po', 3),
-(4, 'Kategori Barang', 'Umum/kategori', 6),
-(5, 'Satuan Barang', 'Umum/satuan', 6),
+(4, 'Kategori Barang', 'Inti/kategori', 6),
+(5, 'Satuan Barang', 'Inti/satuan', 6),
 (6, 'Penerimaan Barang', 'Pembelian/penerimaan', 3),
 (7, 'Retur Barang', 'Pembelian/retur', 3),
 (8, 'Jual', 'Penjualan/jual', 9),
@@ -236,7 +272,9 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (13, 'Bayar', 'Kasir/bayar', 11),
 (14, 'Retur', 'Kasir/retur', 11),
 (15, 'Unit', 'Cabang/unit', 13),
-(16, 'Pengelola Unit', 'Cabang/pengelola', 13);
+(16, 'Pengelola Unit', 'Cabang/pengelola', 13),
+(18, 'Vendor', 'Umum/vendor', 14),
+(19, 'Jatuh Tempo', 'Inti/tempo', 6);
 
 -- --------------------------------------------------------
 
@@ -269,10 +307,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
-(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001'),
+(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 0, '1998-05-02', 'jakarta', 'R0001'),
 (5, 'ahmadhusain', '', '0a61eae58bcb5869aee9c0ba6753180a', 'A000000002', 'default1.svg', 'P', 'Ahmad Husain', '-', '123', 'ahmad@gmail.com', '2024-01-24', 0, 0, '1998-05-02', 'jakarta', 'R0005'),
 (6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005'),
-(12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'admin1', '-', '123', '123@gmail.com', '2024-02-02', 1, 0, '2000-02-02', '-', 'R0001');
+(12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'michel', '-', '123', '123@gmail.com', '2024-02-02', 1, 1, '2000-02-02', '-', 'R0001');
 
 -- --------------------------------------------------------
 
@@ -337,9 +375,21 @@ ALTER TABLE `m_satuan`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `m_tempo`
+--
+ALTER TABLE `m_tempo`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `m_unit`
 --
 ALTER TABLE `m_unit`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `m_vendor`
+--
+ALTER TABLE `m_vendor`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -380,7 +430,7 @@ ALTER TABLE `akses_unit`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `m_kategori`
@@ -407,10 +457,22 @@ ALTER TABLE `m_satuan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `m_tempo`
+--
+ALTER TABLE `m_tempo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `m_unit`
 --
 ALTER TABLE `m_unit`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `m_vendor`
+--
+ALTER TABLE `m_vendor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `role_aksi`
@@ -422,7 +484,7 @@ ALTER TABLE `role_aksi`
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `user`
