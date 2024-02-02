@@ -124,6 +124,8 @@ class Auth extends CI_Controller
   {
     $username = $this->input->post('username');
     $password = $this->input->post('password');
+    $cabang = $this->input->post('cabang');
+    $shift = $this->input->post('shift');
 
     $cekuser = $this->M_central->jumdata('user', ['username' => $username]);
 
@@ -140,6 +142,8 @@ class Auth extends CI_Controller
             'nama' => $cekpass->nama,
             'kode_member' => $cekpass->kode_member,
             'kode_role' => $cekpass->kode_role,
+            'kode_unit' => $cabang,
+            'shift' => $shift,
           ];
           $this->session->set_userdata($dataSession);
 
@@ -164,5 +168,12 @@ class Auth extends CI_Controller
     } else {
       echo json_encode(['response' => 2]);
     }
+  }
+
+  public function cekCabang($username)
+  {
+    $now        = date("Y-m-d");
+    $data       = $this->db->query("SELECT * FROM m_unit WHERE kode_unit IN (SELECT kode_unit FROM akses_unit WHERE username = '$username') AND tgl_selesai >= '$now'")->result();
+    echo json_encode($data);
   }
 }

@@ -15,15 +15,27 @@
                 </div>
                 <hr>
                 <div class="form-group">
-                  <input type="text" class="form-control" id="username" name="username" placeholder="Username...">
+                  <input type="text" class="form-control" id="username" name="username" placeholder="Username..." onchange="cekCabang(this.value)">
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control" id="password" name="password" placeholder="Sandi...">
                 </div>
                 <div class="form-group">
-                  <select name="cabang" id="cabang" class="form-control" data-placeholder="-- Cabang --">
-                    <option value="">-- Cabang --</option>
-                  </select>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <select name="cabang" id="cabang" class="form-control select2_all" data-placeholder="Cabang...">
+                        <option value="">Cabang...</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <select name="shift" id="shift" class="form-control select2_all" data-placeholder="Shift...">
+                        <option value="">Shift...</option>
+                        <option value="1">Shift 1</option>
+                        <option value="2">Shift 2</option>
+                        <option value="3">Shift 3</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 <button type="button" class="btn btn-primary btn-block btn-sm" onclick="login_proses()" id="btnShow">
                   Masuk
@@ -78,6 +90,8 @@
   var userakifasi = $('#userakifasi');
   var username = $('#username');
   var password = $('#password');
+  var cabang = $('#cabang');
+  var shift = $('#shift');
 
   const siteUrl = '<?= site_url() ?>';
   const form = $('#formLogin');
@@ -91,6 +105,29 @@
 
   function ajukan() {
     $('#mAktivasi').modal('show');
+  }
+
+  function cekCabang(username) {
+    $.ajax({
+      url: "<?= site_url('Auth/cekCabang/'); ?>" + username,
+      type: "POST",
+      dataType: "JSON",
+      success: function(result) {
+        cabang.empty();
+        cabang.append('<option value="">Cabang...</option>');
+        $.each(result, function(index, value) {
+          cabang.append('<option value="' + value.kode_unit + '">' + value.nama_unit + '</option>')
+        });
+      },
+      error: function(result) {
+        Swal.fire({
+          title: '501',
+          text: 'Error Sistem',
+          icon: 'error'
+        });
+        return;
+      }
+    });
   }
 
   function ajukan_proses() {
@@ -180,6 +217,30 @@
       Swal.fire({
         title: 'Password',
         text: 'Tidak boleh kosong',
+        icon: 'error'
+      });
+      return;
+    }
+
+    if (cabang.val() == '' || cabang.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
+      Swal.fire({
+        title: 'Cabang',
+        text: 'Harus dipilih',
+        icon: 'error'
+      });
+      return;
+    }
+
+    if (shift.val() == '' || shift.val() == null) {
+      btnHide.hide();
+      btnShow.show();
+
+      Swal.fire({
+        title: 'Shift',
+        text: 'Harus dipilih',
         icon: 'error'
       });
       return;
