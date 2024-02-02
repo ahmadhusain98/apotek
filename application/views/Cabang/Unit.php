@@ -162,6 +162,10 @@
     });
 
     // another function
+    function delspace(param) {
+        var kode_unitx = param.trim();
+        kode_unit.val(kode_unitx);
+    }
     // when photo has been change
     $("#foto_profil").change(function() {
         readURL(this);

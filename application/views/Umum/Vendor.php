@@ -116,6 +116,11 @@
     });
 
     // another function
+    function delspace(param) {
+        var kodex = param.trim();
+        kode.val(kodex);
+    }
+
     function add_vendor() {
         $('#mod_vendor').modal('show');
         $('.modal-title').text('Tambah Vendor');
