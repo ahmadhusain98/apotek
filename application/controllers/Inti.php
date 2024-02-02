@@ -249,4 +249,116 @@ class Inti extends CI_Controller
             echo json_encode(['response' => 0]);
         }
     }
+
+    /**
+     * Jatuh Tempo
+     */
+
+    public function tempo()
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $data = [
+            'judul' => 'Jatuh Tempo',
+            'list_ajax' => 'Inti/list_tempo',
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+        ];
+        $this->template->load('Template/Content', 'Inti/Tempo', $data);
+    }
+
+    public function list_tempo()
+    {
+        $table          = 'm_tempo';
+        $column_order   = ['id', 'keterangan', 'hitung'];
+        $column_search  = ['id', 'keterangan', 'hitung'];
+        $order          = ['keterangan', 'ASC'];
+        $kondisi        = '';
+
+        $sess           = $this->session->userdata('username');
+        $userdata       = $this->M_central->getDataRow('user', ['username' => $sess]);
+
+        $data           = [];
+        $no             = 1;
+        $list           = get_datatables($table, $column_order, $column_search, $order, $kondisi);
+        foreach ($list as $l) {
+            $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]);
+            $row              = [];
+
+            $row[]            = '<div class="text-right">' . $no . '</div>';
+            $row[]            = $l->keterangan;
+            $row[]            = $l->hitung . ' Hari';
+            if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->keterangan . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->keterangan . '" onclick="deleted(' . "'" . $l->id . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->keterangan . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->keterangan . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->keterangan . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->keterangan . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->keterangan . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->keterangan . '" onclick="deleted(' . "'" . $l->id . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            }
+
+            $data[]           = $row;
+            $no++;
+        }
+        $output = [
+            "draw"            => $_POST['draw'],
+            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi),
+            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi),
+            "data"            => $data,
+        ];
+        echo json_encode($output);
+    }
+
+    public function getTempo($id)
+    {
+        $data = $this->M_central->getDataRow('m_tempo', ['id' => $id]);
+        echo json_encode($data);
+    }
+
+    public function proses_tempo($param)
+    {
+        $id = $this->input->post('id');
+        $keterangan = $this->input->post('keterangan');
+        $hitung = $this->input->post('hitung');
+
+        $data = [
+            'keterangan' => $keterangan,
+            'hitung' => $hitung,
+        ];
+
+        if ($param < 2) {
+            $cek = $this->M_central->simpanData('m_tempo', $data);
+        } else {
+            $cek = $this->M_central->updateData('m_tempo', $data, ['id' => $id]);
+        }
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function deleted_tempo_proses($id)
+    {
+        $cek = $this->M_central->delData('m_tempo', ['id' => $id]);
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
 }
