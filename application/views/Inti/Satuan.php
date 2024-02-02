@@ -100,7 +100,7 @@
 
     function updated(idx) {
         $.ajax({
-            url: siteUrl + 'Umum/show_data_satuan/' + idx,
+            url: siteUrl + 'Inti/show_data_satuan/' + idx,
             type: "POST",
             dataType: "JSON",
             success: function(result) {
@@ -173,7 +173,7 @@
         }
 
         $.ajax({
-            url: siteUrl + 'Umum/proses_satuan/' + cekProses,
+            url: siteUrl + 'Inti/proses_satuan/' + cekProses,
             type: "POST",
             data: form.serialize(),
             dataType: "JSON",
@@ -201,7 +201,7 @@
                             text: 'Berhasil dilakukan!',
                             icon: 'success'
                         }).then((result) => {
-                            location.href = siteUrl + 'Umum/satuan';
+                            location.href = siteUrl + 'Inti/satuan';
                         });
                     } else {
                         btnShow.show();
@@ -248,7 +248,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: siteUrl + 'Umum/del_satuan/' + idx,
+                    url: siteUrl + 'Inti/del_satuan/' + idx,
                     type: 'POST',
                     dataType: 'JSON',
                     success: function(result) {
@@ -266,7 +266,7 @@
                                     text: 'Berhasil dihapus!',
                                     icon: 'success'
                                 }).then((result) => {
-                                    location.href = siteUrl + 'Umum/satuan';
+                                    location.href = siteUrl + 'Inti/satuan';
                                 });
                             } else {
                                 Swal.fire({
