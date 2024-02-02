@@ -159,14 +159,18 @@ class Auth extends CI_Controller
     }
   }
 
-  public function logout_action()
+  public function logout_action($param = '')
   {
     $username = $this->session->userdata('username');
     $cek = $this->M_central->updateData('user', ['status_aktif' => 0], ['username' => $username]);
-    if ($cek) {
-      echo json_encode(['response' => 1]);
+    if ($param == '') {
+      if ($cek) {
+        echo json_encode(['response' => 1]);
+      } else {
+        echo json_encode(['response' => 2]);
+      }
     } else {
-      echo json_encode(['response' => 2]);
+      redirect('Auth');
     }
   }
 

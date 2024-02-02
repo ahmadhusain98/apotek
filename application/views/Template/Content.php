@@ -66,6 +66,15 @@
 
 <body id="page-top">
 
+  <?php
+  $sess = $this->session->userdata('username');
+  $sess1 = $this->session->userdata('kode_unit');
+  $cek_unit = $this->db->get_where('akses_unit', ['username' => $sess, 'kode_unit' => $sess1])->num_rows();
+  if ($cek_unit < 1) {
+    redirect('Auth/logout_action/1');
+  }
+  ?>
+
   <!-- Page Wrapper -->
   <div id="wrapper">
 
