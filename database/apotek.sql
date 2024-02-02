@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 30, 2024 at 11:17 AM
+-- Generation Time: Feb 02, 2024 at 12:44 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -20,6 +20,28 @@ SET time_zone = "+00:00";
 --
 -- Database: `apotek`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `akses_unit`
+--
+
+CREATE TABLE `akses_unit` (
+  `id` int(11) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `kode_unit` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `akses_unit`
+--
+
+INSERT INTO `akses_unit` (`id`, `username`, `kode_unit`) VALUES
+(6, 'admin', 'DIY'),
+(7, 'admin', 'MGL'),
+(8, 'admin1', 'MGL'),
+(9, 'admin1', 'DIY');
 
 -- --------------------------------------------------------
 
@@ -153,7 +175,8 @@ CREATE TABLE `m_unit` (
 --
 
 INSERT INTO `m_unit` (`id`, `kode_unit`, `nama_unit`, `foto`, `alamat`, `kontak`, `penanggungjawab`, `tgl_mulai`, `tgl_selesai`, `status_unit`) VALUES
-(1, 'DIY', 'Yogyakarta', '', 'Yogyakarta, Jl. Magelang', '000123', 'Ahmad Husain', '2024-01-30', '2025-01-30', 1);
+(7, 'DIY', 'Yogyakarta', 'default.png', 'Yogyakarta, Jl. Magelang', '00123', 'Ahmad Husain', '2023-01-01', '2024-03-01', 1),
+(8, 'MGL', 'Magelang', 'default.png', 'Magelang, Jl. Borobudur', '000123', 'Ardi', '2024-01-01', '2025-01-01', 1);
 
 -- --------------------------------------------------------
 
@@ -248,7 +271,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
 (1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001'),
 (5, 'ahmadhusain', '', '0a61eae58bcb5869aee9c0ba6753180a', 'A000000002', 'default1.svg', 'P', 'Ahmad Husain', '-', '123', 'ahmad@gmail.com', '2024-01-24', 0, 0, '1998-05-02', 'jakarta', 'R0005'),
-(6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005');
+(6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005'),
+(12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'admin1', '-', '123', '123@gmail.com', '2024-02-02', 1, 0, '2000-02-02', '-', 'R0001');
 
 -- --------------------------------------------------------
 
@@ -269,11 +293,18 @@ CREATE TABLE `user_aktivasi` (
 INSERT INTO `user_aktivasi` (`id`, `username`, `aktivasi`) VALUES
 (1, 'admin', 1),
 (5, 'ahmadhusain', 0),
-(6, 'user', 0);
+(6, 'user', 0),
+(12, 'admin1', 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `akses_unit`
+--
+ALTER TABLE `akses_unit`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `menu`
@@ -340,6 +371,12 @@ ALTER TABLE `user_aktivasi`
 --
 
 --
+-- AUTO_INCREMENT for table `akses_unit`
+--
+ALTER TABLE `akses_unit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
@@ -373,7 +410,7 @@ ALTER TABLE `m_satuan`
 -- AUTO_INCREMENT for table `m_unit`
 --
 ALTER TABLE `m_unit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `role_aksi`
@@ -391,13 +428,13 @@ ALTER TABLE `sub_menu`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user_aktivasi`
 --
 ALTER TABLE `user_aktivasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
