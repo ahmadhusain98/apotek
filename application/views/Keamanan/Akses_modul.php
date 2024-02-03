@@ -1,63 +1,56 @@
-<form method="post" id="formUnit">
-    <div class="h4 mb-3 text-gray-800">Cabang / pengelola unit
-        <div class="btn-group float-right" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-dark btn-sm" disabled>Video Tutorial <i class="fa fa-arrow-alt-circle-right"></i></button>
-            <button type="button" class="btn btn-info btn-sm" title="Tutorial Beri Akses" onclick="tutor(1)"><i class="fa-solid fa-toggle-on"></i></button>
-            <button type="button" class="btn btn-info btn-sm" title="Tutorial Matikan Akses" onclick="tutor(2)"><i class="fa-solid fa-toggle-off"></i></button>
-        </div>
-    </div>
+<form method="post" id="formAksesModul">
+    <div class="h4 mb-3 text-gray-800">Keamanan / aktifasi akun</div>
 
     <div class=" card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">List data pengelola unit
+            <h6 class="m-0 font-weight-bold text-primary">List data aktifasi akun
                 <button type="button" class="btn btn-sm float-right" style="background-color: transparent; border: 0px;" title="Informasi" onclick="forInfo()"><i class="fa fa-2x fa-info-circle text-info"></i></button>
             </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="tablePengelolaUnit" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tableAksesModul" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th rowspan="2" width="5%">No</th>
-                            <th rowspan="2">Username</th>
-                            <th class="text-center" colspan="<?= count($cabang) ?>">Cabang</th>
+                            <th rowspan="2">Tingkatan</th>
+                            <th class="text-center" colspan="<?= count($modul) ?>">Modul</th>
                         </tr>
                         <tr>
-                            <?php foreach ($cabang as $c) : ?>
-                                <th><?= $c->nama_unit ?></th>
+                            <?php foreach ($modul as $m) : ?>
+                                <td><?= $m->nama ?></td>
                             <?php endforeach; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $no = 1;
-                        foreach ($table as $t) :
+                        foreach ($m_role as $r) :
                         ?>
                             <tr>
                                 <td><?= $no ?></td>
-                                <td>
-                                    <?= $t->username ?>
-                                </td>
+                                <td><?= $r->keterangan ?></td>
                                 <?php
-                                $nocab = 1;
-                                foreach ($cabang as $c) {
-                                    if ($this->db->query("SELECT * FROM akses_unit WHERE kode_unit IN (SELECT kode_unit FROM m_unit WHERE kode_unit = '$c->kode_unit') AND username = '$t->username'")->num_rows() > 0) {
+                                $nom = 1;
+                                foreach ($modul as $m) :
+                                    if ($this->db->query("SELECT * FROM akses_modul WHERE kode_role IN (SELECT kode FROM m_role WHERE kode = '$r->kode') AND id_modul = '$m->id'")->num_rows() > 0) {
                                         $cek = "checked";
                                     } else {
                                         $cek = "";
-                                    } ?>
+                                    }
+                                ?>
                                     <td class="text-center">
-                                        <input type="hidden" id="ph<?= $nocab; ?>">
-                                        <input type="checkbox" <?= $cek; ?> class="form-control" id="pilih<?= $nocab . '_' . $no; ?>" name="pilih[]" onclick="getAksesCab('<?= $c->kode_unit; ?>', '<?= $c->nama_unit; ?>', '<?= $nocab; ?>', '<?= $t->username; ?>', '<?= $no; ?>')">
+                                        <input type="hidden" id="ph<?= $nom; ?>">
+                                        <input type="checkbox" <?= $cek; ?> class="form-control" id="pilih<?= $nom . '_' . $no; ?>" name="pilih[]" onclick="getAksesModul('<?= $m->id; ?>', '<?= $m->nama; ?>', '<?= $nom; ?>', '<?= $r->kode; ?>', '<?= $no; ?>')">
                                     </td>
-                                <?php $nocab++;
-                                }
+                                <?php
+                                    $nom++;
+                                endforeach;
                                 ?>
                             </tr>
                         <?php
                             $no++;
-                        endforeach;
-                        ?>
+                        endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -66,7 +59,7 @@
 </form>
 
 <script>
-    var tablePengelolaUnit = $('#tablePengelolaUnit').DataTable({
+    var tableAksesModul = $('#tableAksesModul').DataTable({
         destroy: true,
         processing: true,
         responsive: true,
@@ -97,7 +90,7 @@
         }, ],
     });
 
-    function getAksesCab(kode_unit, nama_unit, nomor, username, no) {
+    function getAksesModul(id_modul, nama_modul, nomor, kode_role, no) {
         if (document.getElementById("pilih" + nomor + "_" + no).checked == true) {
             var cekph = 1;
         } else {
@@ -106,7 +99,7 @@
         if (cekph < 1) {
             Swal.fire({
                 title: "Anda yakin?",
-                text: "Hapus akses pada username ini!",
+                text: "Hapus akses pada role ini!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -116,7 +109,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "<?= site_url('Cabang/del_cabang/'); ?>" + kode_unit + '/' + username,
+                        url: "<?= site_url('Akses_modul/del_akses/'); ?>" + id_modul + '/' + kode_role,
                         type: "POST",
                         dataType: "JSON",
                         success: function(result) {
@@ -130,13 +123,13 @@
                             } else {
                                 if (result.response == 1) {
                                     Swal.fire({
-                                        title: 'Username ' + username,
+                                        title: 'Modul ' + nama_modul,
                                         text: 'Berhasil menghapus akses!',
                                         icon: 'success'
                                     });
                                 } else {
                                     Swal.fire({
-                                        title: 'Username ' + username,
+                                        title: 'Modul ' + nama_modul,
                                         text: 'Gagal menghapus akses!',
                                         icon: 'error'
                                     });
@@ -159,7 +152,7 @@
         } else {
             Swal.fire({
                 title: "Anda yakin?",
-                text: "Beri akses pada username ini!",
+                text: "Beri akses pada role ini!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -169,7 +162,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "<?= site_url('Cabang/add_cabang/'); ?>" + kode_unit + '/' + username,
+                        url: "<?= site_url('Akses_modul/add_akses/'); ?>" + id_modul + '/' + kode_role,
                         type: "POST",
                         dataType: "JSON",
                         success: function(result) {
@@ -183,13 +176,13 @@
                             } else {
                                 if (result.response == 1) {
                                     Swal.fire({
-                                        title: 'Username ' + username,
+                                        title: 'Modul ' + nama_modul,
                                         text: 'Berhasil memberikan akses!',
                                         icon: 'success'
                                     });
                                 } else {
                                     Swal.fire({
-                                        title: 'Username ' + username,
+                                        title: 'Modul ' + nama_modul,
                                         text: 'Gagal memberikan akses!',
                                         icon: 'error'
                                     });
