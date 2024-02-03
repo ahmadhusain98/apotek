@@ -16,11 +16,12 @@
                 <hr>
                 <div class="form-group">
                   <input type="text" class="form-control" id="username" name="username" placeholder="Username..." onchange="cekCabang(this.value)">
+                  <input type="hidden" name="forCekRole" id="forCekRole" value="1">
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control" id="password" name="password" placeholder="Sandi...">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="forPengelola">
                   <div class="row">
                     <div class="col-md-6">
                       <select name="cabang" id="cabang" class="form-control select2_all" data-placeholder="Cabang...">
@@ -92,6 +93,8 @@
   var password = $('#password');
   var cabang = $('#cabang');
   var shift = $('#shift');
+  var forPengelola = $('#forPengelola');
+  var forCekRole = $('#forCekRole');
 
   const siteUrl = '<?= site_url() ?>';
   const form = $('#formLogin');
@@ -101,6 +104,7 @@
 
   $(document).ready(function() {
     btnHide.hide();
+    forPengelola.hide();
   });
 
   function ajukan() {
@@ -109,15 +113,37 @@
 
   function cekCabang(username) {
     $.ajax({
-      url: "<?= site_url('Auth/cekCabang/'); ?>" + username,
+      url: "<?= site_url('Auth/cekRole/'); ?>" + username,
       type: "POST",
       dataType: "JSON",
       success: function(result) {
-        cabang.empty();
-        cabang.append('<option value="">Cabang...</option>');
-        $.each(result, function(index, value) {
-          cabang.append('<option value="' + value.kode_unit + '">' + value.nama_unit + '</option>')
-        });
+        if (result.kode_role == 'R0005') {
+          forCekRole.val(2);
+          forPengelola.hide();
+        } else {
+          forCekRole.val(1);
+          forPengelola.show();
+          $.ajax({
+            url: "<?= site_url('Auth/cekCabang/'); ?>" + username,
+            type: "POST",
+            dataType: "JSON",
+            success: function(result) {
+              cabang.empty();
+              cabang.append('<option value="">Cabang...</option>');
+              $.each(result, function(index, value) {
+                cabang.append('<option value="' + value.kode_unit + '">' + value.nama_unit + '</option>')
+              });
+            },
+            error: function(result) {
+              Swal.fire({
+                title: '501',
+                text: 'Error Sistem',
+                icon: 'error'
+              });
+              return;
+            }
+          });
+        }
       },
       error: function(result) {
         Swal.fire({
@@ -222,28 +248,30 @@
       return;
     }
 
-    if (cabang.val() == '' || cabang.val() == null) {
-      btnHide.hide();
-      btnShow.show();
+    if (forCekRole.val() == 1) {
+      if (cabang.val() == '' || cabang.val() == null) {
+        btnHide.hide();
+        btnShow.show();
 
-      Swal.fire({
-        title: 'Cabang',
-        text: 'Harus dipilih',
-        icon: 'error'
-      });
-      return;
-    }
+        Swal.fire({
+          title: 'Cabang',
+          text: 'Harus dipilih',
+          icon: 'error'
+        });
+        return;
+      }
 
-    if (shift.val() == '' || shift.val() == null) {
-      btnHide.hide();
-      btnShow.show();
+      if (shift.val() == '' || shift.val() == null) {
+        btnHide.hide();
+        btnShow.show();
 
-      Swal.fire({
-        title: 'Shift',
-        text: 'Harus dipilih',
-        icon: 'error'
-      });
-      return;
+        Swal.fire({
+          title: 'Shift',
+          text: 'Harus dipilih',
+          icon: 'error'
+        });
+        return;
+      }
     }
 
     // cek user

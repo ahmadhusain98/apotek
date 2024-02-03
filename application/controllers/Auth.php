@@ -180,4 +180,10 @@ class Auth extends CI_Controller
     $data       = $this->db->query("SELECT * FROM m_unit WHERE kode_unit IN (SELECT kode_unit FROM akses_unit WHERE username = '$username') AND tgl_selesai >= '$now'")->result();
     echo json_encode($data);
   }
+
+  public function cekRole($username)
+  {
+    $data = $this->M_central->getDataRow('user', ['username' => $username]);
+    echo json_encode(['kode_role' => $data->kode_role]);
+  }
 }

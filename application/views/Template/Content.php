@@ -69,9 +69,11 @@
   <?php
   $sess = $this->session->userdata('username');
   $sess1 = $this->session->userdata('kode_unit');
-  $cek_unit = $this->db->get_where('akses_unit', ['username' => $sess, 'kode_unit' => $sess1])->num_rows();
-  if ($cek_unit < 1) {
-    redirect('Auth/logout_action/1');
+  if ($sess1 != '') {
+    $cek_unit = $this->db->get_where('akses_unit', ['username' => $sess, 'kode_unit' => $sess1])->num_rows();
+    if ($cek_unit < 1) {
+      redirect('Auth/logout_action/1');
+    }
   }
   ?>
 
@@ -329,8 +331,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Shift Kerja: <?= $this->session->userdata('shift') ?>
-                <div class="topbar-divider d-none d-sm-block"></div>
+                <?= (($this->session->userdata('shift') != '') ? 'Shift Kerja: ' . $this->session->userdata('shift') . '<div class="topbar-divider d-none d-sm-block"></div>' : '') ?>
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->nama; ?></span>
                 <img class="img-profile rounded-circle" src="<?= base_url() ?>../assets/img/user/<?= $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row()->foto; ?>">
               </a>
