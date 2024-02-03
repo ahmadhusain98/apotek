@@ -93,7 +93,8 @@
       </a>
 
       <?php
-      $modul = $this->db->get("m_modul")->result();
+      $sess_role = $this->session->userdata('kode_role');
+      $modul = $this->db->query("SELECT * FROM m_modul WHERE id IN (SELECT id_modul FROM akses_modul WHERE kode_role = '$sess_role')")->result();
       foreach ($modul as $mo) :
         if ($mo->nama == '') {
           $devider = "my-0";
