@@ -13,7 +13,7 @@
             <h6 class="m-0 font-weight-bold text-primary">List data barang
                 <button type="button" class="btn btn-sm float-right" style="background-color: transparent; border: 0px;" title="Informasi" onclick="forInfo()"><i class="fa fa-2x fa-info-circle text-info"></i></button>
                 <?php if ($role_aksi->tambah > 0) : ?>
-                    <button class="btn btn-primary btn-sm float-right" type="button" onclick="add_barang()"><i class="fa fa-plus"></i> Tambah List</button>
+                    <a class="btn btn-primary btn-sm float-right" type="button" href="<?= site_url() ?>Umum/tambah_barang"><i class="fa fa-plus"></i> Tambah List</a>
                 <?php endif; ?>
             </h6>
         </div>
@@ -22,14 +22,21 @@
                 <table class="table table-bordered" id="tableUnit" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Alamat</th>
-                            <th>Penanggungjawab</th>
-                            <th>Kontak</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
+                            <th rowspan="2" width="5%">No</th>
+                            <th rowspan="2">Unit</th>
+                            <th rowspan="2">Kode</th>
+                            <th rowspan="2">Nama</th>
+                            <th rowspan="2">Kategori</th>
+                            <th rowspan="2">Satuan</th>
+                            <th colspan="4" class="text-center">Harga</th>
+                            <th rowspan="2">Deskripsi</th>
+                            <th rowspan="2">Aksi</th>
+                        </tr>
+                        <tr>
+                            <th>Beli</th>
+                            <th>Beli + PPN</th>
+                            <th>NET</th>
+                            <th>Jual</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -38,3 +45,7 @@
         </div>
     </div>
 </form>
+
+<script>
+    var table = $('#tableUnit');
+</script>

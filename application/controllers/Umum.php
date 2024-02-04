@@ -16,6 +16,10 @@ class Umum extends CI_Controller
         }
     }
 
+    /**
+     * VENDOR
+     */
+
     public function vendor()
     {
         $sess = $this->session->userdata('username');
@@ -179,5 +183,86 @@ class Umum extends CI_Controller
         } else {
             echo json_encode(['response' => 0]);
         }
+    }
+
+    /**
+     * BARANG
+     */
+
+    public function barang()
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $data = [
+            'judul' => 'Barang',
+            'list_ajax' => 'Umum/list_barang/?cabang=' . $this->session->userdata('kode_unit'),
+            'm_role' => $this->M_central->getResult('m_role'),
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+        ];
+
+        $this->template->load('Template/Content', 'Umum/Barang', $data);
+    }
+
+    public function list_barang()
+    {
+        $cabang = $this->input->get('cabang');
+        if (empty($cabang)) {
+            $cabangx = $this->session->userdata('kode_unit');
+        } else {
+            $cabangx = $cabang;
+        }
+
+        $table          = 'barang';
+        $column_order   = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
+        $column_search  = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
+        $order          = ['barang.kode', 'ASC'];
+        $kondisi        = 'For_barang';
+        $kondisi2       = $cabangx;
+
+        $data   = [];
+        $no     = 1;
+        $list   = get_datatables($table, $column_order, $column_search, $order, $kondisi, $kondisi2);
+        foreach ($list as $l) {
+            $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $l->kode_role]);
+            $row              = [];
+
+            $row[]            = '<div class="text-right">' . $no . '</div>';
+            $row[]            = $l->kode_unit;
+            $row[]            = $l->kode;
+            $row[]            = $l->nama;
+            $row[]            = $l->kategori;
+            $row[]            = $l->satuan;
+            $row[]            = $l->harga_beli;
+            $row[]            = $l->harga_beli_ppn;
+            $row[]            = $l->harga_net;
+            $row[]            = $l->harga_jual;
+            $row[]            = $l->deskripsi;
+
+            $data[]           = $row;
+            $no++;
+        }
+        $output = [
+            "draw"            => $_POST['draw'],
+            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
+            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
+            "data"            => $data,
+        ];
+        echo json_encode($output);
+    }
+
+    public function tambah_barang()
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $data = [
+            'judul' => 'Tambah Barang',
+            'menu' => 'Umum/barang',
+            'kategori' => $this->M_central->getResult('m_kategori'),
+            'satuan' => $this->M_central->getResult('m_satuan'),
+            'm_role' => $this->M_central->getResult('m_role'),
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+        ];
+
+        $this->template->load('Template/Content', 'Umum/Tambah_barang', $data);
     }
 }

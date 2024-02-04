@@ -1,5 +1,5 @@
 <?php
-function _get_datatables_query($table, $column_order, $column_search, $order, $kondisi)
+function _get_datatables_query($table, $column_order, $column_search, $order, $kondisi, $kondisi2)
 {
     $CI           = &get_instance();
 
@@ -13,6 +13,9 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
         $CI->db->order_by('username', 'ASC');
     } else if (($kondisi == 'modul') || ($kondisi == 'menu') || ($kondisi == 'submenu')) {
         $CI->db->order_by('nama', 'ASC');
+    } else if ($kondisi == 'For_barang') {
+        $CI->db->join('harga_unit', $table . '.kode = harga_unit.kode_barang', 'INNER');
+        $CI->db->where('harga_unit.kode_unit', $kondisi2);
     }
     $i = 0;
     foreach ($column_search as $item) {
@@ -36,37 +39,43 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
     }
 }
 
-function get_datatables($table, $column_order, $column_search, $order, $kondisi)
+function get_datatables($table, $column_order, $column_search, $order, $kondisi, $kondisi2 = '')
 {
     $CI           = &get_instance();
 
-    _get_datatables_query($table, $column_order, $column_search, $order, $kondisi);
+    _get_datatables_query($table, $column_order, $column_search, $order, $kondisi, $kondisi2);
     if ($_POST['length'] != -1)
         $CI->db->limit($_POST['length'], $CI->input->post('start'));
     $query = $CI->db->get();
     return $query->result();
 }
 
-function count_filtered($table, $column_order, $column_search, $order, $kondisi)
+function count_filtered($table, $column_order, $column_search, $order, $kondisi, $kondisi2 = '')
 {
     $CI           = &get_instance();
 
-    _get_datatables_query($table, $column_order, $column_search, $order, $kondisi);
+    _get_datatables_query($table, $column_order, $column_search, $order, $kondisi, $kondisi2);
     $query = $CI->db->get();
     return $query->num_rows();
 }
 
-function count_all($table, $column_order, $column_search, $order, $kondisi)
+function count_all($table, $column_order, $column_search, $order, $kondisi, $kondisi2 = '')
 {
     $CI           = &get_instance();
 
     $CI->db->select($column_order);
     $CI->db->from($table);
     if ($kondisi == 'user_pengelola') {
-        $CI->db->where('kode_role', 'R0001');
+        $CI->db->where('kode_role <> ', 'R0005');
+        $CI->db->order_by('username', 'ASC');
+    } else if ($kondisi == 'user_member') {
+        $CI->db->where('kode_role', 'R0005');
         $CI->db->order_by('username', 'ASC');
     } else if (($kondisi == 'modul') || ($kondisi == 'menu') || ($kondisi == 'submenu')) {
         $CI->db->order_by('nama', 'ASC');
+    } else if ($kondisi == 'For_barang') {
+        $CI->db->join('harga_unit', $table . '.kode = harga_unit.kode_barang', 'INNER');
+        $CI->db->where('harga_unit.kode_unit', $kondisi2);
     }
     return $CI->db->count_all_results();
 }
