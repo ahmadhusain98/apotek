@@ -1,3 +1,4 @@
+<?= $kode ?>
 <form method="post" id="formUnit">
     <div class="h4 mb-3 text-gray-800">Tambah Barang</div>
 

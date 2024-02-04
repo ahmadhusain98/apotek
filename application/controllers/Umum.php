@@ -261,6 +261,7 @@ class Umum extends CI_Controller
             'satuan' => $this->M_central->getResult('m_satuan'),
             'm_role' => $this->M_central->getResult('m_role'),
             'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+            'kode' => kode_barang('Obat Ringan', 'Botol Plastik'),
         ];
 
         $this->template->load('Template/Content', 'Umum/Tambah_barang', $data);
