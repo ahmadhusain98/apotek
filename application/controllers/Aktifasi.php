@@ -42,7 +42,6 @@ class Aktifasi extends CI_Controller
         $order          = ['username', 'ASC'];
         $kondisi        = '';
 
-
         $sess = $this->session->userdata('username');
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
 

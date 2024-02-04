@@ -191,13 +191,17 @@ class Umum extends CI_Controller
 
     public function barang()
     {
+        $now = date('Y-m-d');
         $sess = $this->session->userdata('username');
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
         $data = [
             'judul' => 'Barang',
-            'list_ajax' => 'Umum/list_barang/?cabang=' . $this->session->userdata('kode_unit'),
+            'list_ajax' => 'Umum/list_barang/?cabang=',
             'm_role' => $this->M_central->getResult('m_role'),
             'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+            'm_unit' => $this->M_central->getDataResult('m_unit', ['tgl_selesai >= ' => $now]),
+            'm_kategori' => $this->M_central->getResult('m_kategori'),
+            'm_satuan' => $this->M_central->getResult('m_satuan'),
         ];
 
         $this->template->load('Template/Content', 'Umum/Barang', $data);
@@ -212,48 +216,102 @@ class Umum extends CI_Controller
             $cabangx = $cabang;
         }
 
+        $kategori = $this->input->get('kategori');
+        if (empty($kategori)) {
+            $kategorix = '';
+        } else {
+            $kategorix = $kategori;
+        }
+
+        $satuan = $this->input->get('satuan');
+        if (empty($satuan)) {
+            $satuanx = '';
+        } else {
+            $satuanx = $satuan;
+        }
+
         $table          = 'barang';
-        $column_order   = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
-        $column_search  = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
+        $column_order   = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual', 'harga_unit.kena_pajak', 'm_kategori.nama as kategorix', 'm_satuan.nama as satuanx'];
+        $column_search  = ['barang.id', 'harga_unit.kode_unit', 'barang.kode', 'barang.nama', 'barang.kategori', 'barang.satuan', 'barang.deskripsi', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual', 'harga_unit.kena_pajak', 'm_kategori.nama as kategorix', 'm_satuan.nama as satuanx'];
         $order          = ['barang.kode', 'ASC'];
         $kondisi        = 'For_barang';
         $kondisi2       = $cabangx;
+        $kondisi3       = $kategorix;
+        $kondisi4       = $satuan;
+
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
 
         $data   = [];
         $no     = 1;
-        $list   = get_datatables($table, $column_order, $column_search, $order, $kondisi, $kondisi2);
+        $list   = get_datatables($table, $column_order, $column_search, $order, $kondisi, $kondisi2, $kondisi3, $kondisi4);
         foreach ($list as $l) {
-            $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $l->kode_role]);
+            $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]);
             $row              = [];
 
             $row[]            = '<div class="text-right">' . $no . '</div>';
             $row[]            = $l->kode_unit;
             $row[]            = $l->kode;
             $row[]            = $l->nama;
-            $row[]            = $l->kategori;
-            $row[]            = $l->satuan;
-            $row[]            = $l->harga_beli;
-            $row[]            = $l->harga_beli_ppn;
-            $row[]            = $l->harga_net;
-            $row[]            = $l->harga_jual;
+            $row[]            = $l->kategorix;
+            $row[]            = $l->satuanx;
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_beli) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_beli_ppn) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_net) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_jual) . '</div>';
             $row[]            = $l->deskripsi;
+            if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0)) {
+                $row[]            = '<div class="text-center">
+                  <a type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" href="' . site_url() . 'Umum/proses_barang/' . $l->kode . '"><i class="fa-solid fa-repeat"></i></a>
+                  <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" onclick="deleted(' . "'" . $l->kode . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                  <a type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" href="' . site_url() . 'Umum/proses_barang/' . $l->kode . '"><i class="fa-solid fa-repeat"></i></a>
+                  <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1)) {
+                $row[]            = '<div class="text-center">
+                  <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                  <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else {
+                $row[]            = '<div class="text-center">
+                  <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                  <a type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" onclick="deleted(' . "'" . $l->kode . "'" . ')"><i class="fa fa-ban"></i></a>
+                </div>';
+            }
 
             $data[]           = $row;
             $no++;
         }
         $output = [
             "draw"            => $_POST['draw'],
-            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
-            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
+            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi, $kondisi2, $kondisi3, $kondisi4),
+            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi, $kondisi2, $kondisi3, $kondisi4),
             "data"            => $data,
         ];
         echo json_encode($output);
     }
 
-    public function tambah_barang()
+    public function proses_barang($kode_barang = '')
     {
         $sess = $this->session->userdata('username');
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $unit = $this->session->userdata('kode_unit');
+
+        if ($kode_barang == '') {
+            $judul_form = 'Tambah Barang';
+            $prosesx = 1;
+            $barang = '';
+            $harga = '';
+        } else {
+            $judul_form = 'Update Barang';
+            $prosesx = 2;
+            $barang = $this->M_central->getDataRow('barang', ['kode' => $kode_barang]);
+            $harga = $this->M_central->getDataRow('harga_unit', ['kode_barang' => $kode_barang, 'kode_unit' => $unit]);
+        }
+
         $data = [
             'judul' => 'Tambah Barang',
             'menu' => 'Umum/barang',
@@ -261,9 +319,85 @@ class Umum extends CI_Controller
             'satuan' => $this->M_central->getResult('m_satuan'),
             'm_role' => $this->M_central->getResult('m_role'),
             'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
-            'kode' => kode_barang('Obat Ringan', 'Botol Plastik'),
+            'prosesx' => $prosesx,
+            'judul_form' => $judul_form,
+            'barang' => $barang,
+            'harga' => $harga,
         ];
 
-        $this->template->load('Template/Content', 'Umum/Tambah_barang', $data);
+        $this->template->load('Template/Content', 'Umum/Form_barang', $data);
+    }
+
+    public function proses_barang_aksi($param)
+    {
+        $kode_unit = $this->session->userdata('kode_unit');
+        $kategori = $this->input->post('kategori');
+        $m_kategori = $this->M_central->getDataRow('m_kategori', ['kode' => $kategori]);
+        $satuan = $this->input->post('satuan');
+        $m_satuan = $this->M_central->getDataRow('m_satuan', ['kode' => $satuan]);
+
+        if ($param < 2) {
+            $kode = kode_barang($m_kategori->nama, $m_satuan->nama);
+        } else {
+            $kode = $this->input->post('kode');
+        }
+
+        $nama = $this->input->post('nama');
+        $deskripsi = $this->input->post('deskripsi');
+        $harga_beli = str_replace(",", "", $this->input->post('harga_beli'));
+        $kena_pajak = $this->input->post('kena_pajak');
+        $harga_beli_ppn = str_replace(",", "", $this->input->post('harga_beli_ppn'));
+        $harga_net = str_replace(",", "", $this->input->post('harga_net'));
+        $harga_jual = str_replace(",", "", $this->input->post('harga_jual'));
+
+        $data_barang = [
+            'kode' => $kode,
+            'nama' => $nama,
+            'kategori' => $kategori,
+            'satuan' => $satuan,
+            'deskripsi' => $deskripsi,
+        ];
+
+        $data_harga = [
+            'kode_unit' => $kode_unit,
+            'kode_barang' => $kode,
+            'harga_beli' => $harga_beli,
+            'kena_pajak' => $kena_pajak,
+            'harga_beli_ppn' => $harga_beli_ppn,
+            'harga_net' => $harga_net,
+            'harga_jual' => $harga_jual,
+        ];
+
+        if ($param < 2) {
+            $cek = [
+                $this->M_central->simpanData('barang', $data_barang),
+                $this->M_central->simpanData('harga_unit', $data_harga),
+            ];
+        } else {
+            $cek = [
+                $this->M_central->updateData('barang', $data_barang, ['kode' => $kode]),
+                $this->M_central->updateData('harga_unit', $data_harga, ['kode_barang' => $kode, 'kode_unit' => $kode_unit]),
+            ];
+        }
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function deleted_barang($kode_barang)
+    {
+        $cek = [
+            $this->M_central->delData('barang', ['kode' => $kode_barang]),
+            $this->M_central->delData('harga_unit', ['kode_barang' => $kode_barang]),
+        ];
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
     }
 }
