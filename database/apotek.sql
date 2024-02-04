@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 03, 2024 at 04:18 PM
+-- Generation Time: Feb 04, 2024 at 07:59 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -101,14 +101,15 @@ CREATE TABLE `barang` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `harga_cabang`
+-- Table structure for table `harga_unit`
 --
 
-CREATE TABLE `harga_cabang` (
+CREATE TABLE `harga_unit` (
   `id` int(11) NOT NULL,
   `kode_unit` varchar(10) NOT NULL,
   `kode_barang` varchar(10) NOT NULL,
   `harga_beli` int(11) NOT NULL,
+  `kena_pajak` int(1) NOT NULL DEFAULT 0,
   `harga_beli_ppn` int(11) NOT NULL,
   `harga_net` int(11) NOT NULL,
   `harga_jual` int(11) NOT NULL
@@ -367,7 +368,8 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (15, 'Unit', 'Cabang/unit', 13),
 (16, 'Pengelola Unit', 'Cabang/pengelola', 13),
 (18, 'Vendor', 'Umum/vendor', 14),
-(19, 'Jatuh Tempo', 'Inti/tempo', 6);
+(19, 'Jatuh Tempo', 'Inti/tempo', 6),
+(20, 'Barang', 'Umum/barang', 14);
 
 -- --------------------------------------------------------
 
@@ -400,7 +402,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
-(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'jakarta', 'R0001'),
+(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 0, '1998-05-02', 'jakarta', 'R0001'),
 (5, 'ahmadhusain', 'ahmadhusain', '0a61eae58bcb5869aee9c0ba6753180a', 'A000000002', 'default1.svg', 'P', 'Ahmad Husain', '-', '123', 'ahmad@gmail.com', '2024-01-24', 1, 0, '1998-05-02', 'jakarta', 'R0005'),
 (6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005'),
 (12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'michel', '-', '123', '123@gmail.com', '2024-02-02', 1, 0, '2000-02-02', '-', 'R0001');
@@ -450,9 +452,9 @@ ALTER TABLE `barang`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `harga_cabang`
+-- Indexes for table `harga_unit`
 --
-ALTER TABLE `harga_cabang`
+ALTER TABLE `harga_unit`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -547,13 +549,13 @@ ALTER TABLE `akses_unit`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `harga_cabang`
+-- AUTO_INCREMENT for table `harga_unit`
 --
-ALTER TABLE `harga_cabang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `harga_unit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `menu`
@@ -613,7 +615,7 @@ ALTER TABLE `role_aksi`
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `user`
