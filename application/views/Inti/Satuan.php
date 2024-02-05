@@ -52,7 +52,7 @@
                                 <div class="row">
                                     <label class="control-label col-sm-3">Nama</label>
                                     <div class="col-sm-9">
-                                        <input type="text" name="nama" id="nama" class="form-control">
+                                        <input type="text" name="nama" id="nama" class="form-control" onkeyup="ubah_nama(this.value, 'nama')">
                                     </div>
                                 </div>
                             </div>

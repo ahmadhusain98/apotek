@@ -439,6 +439,23 @@
       $('#' + idForm).val(sign < 0 ? '-' + result : result);
     }
 
+    function ubah_nama(val, idForm) {
+      str = val.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+        return letter.toUpperCase();
+      });
+      $('#' + idForm).val(str);
+    }
+
+    function delspace(param, idForm) {
+      var kodex = param.trim();
+      $('#' + idForm).val(kodex.toUpperCase());
+    }
+
+    function delspace_nocaps(param, idForm) {
+      var kodex = param.trim();
+      $('#' + idForm).val(kodex);
+    }
+
     function logout() {
       Swal.fire({
         title: "Keluar?",

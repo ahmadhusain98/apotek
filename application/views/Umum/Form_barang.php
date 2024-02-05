@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input type="text" name="nama" id="nama" class="form-control" placeholder="Nama Barang..." value="<?= (!empty($barang) ? $barang->nama : '') ?>">
+                        <input type="text" name="nama" id="nama" class="form-control" placeholder="Nama Barang..." value="<?= (!empty($barang) ? $barang->nama : '') ?>" onkeyup="ubah_nama(this.value, 'nama')">
                     </div>
                 </div>
             </div>

@@ -52,19 +52,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <input type="hidden" name="id" id="id">
-                                <input type="text" title="Kode Unit" class="form-control" id="kode_unit" name="kode_unit" placeholder="Kode Unit..." onkeyup="delspace(this.value)">
+                                <input type="text" title="Kode Unit" class="form-control" id="kode_unit" name="kode_unit" placeholder="Kode Unit..." onkeyup="delspace(this.value, 'kode_unit')">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" title="Penanggungjawab" class="form-control" id="penanggungjawab" name="penanggungjawab" placeholder="Penanggungjawab...">
+                                <input type="text" title="Penanggungjawab" class="form-control" id="penanggungjawab" name="penanggungjawab" placeholder="Penanggungjawab..." onkeyup="ubah_nama(this.value, 'penanggungjawab')">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" title="Nama Unit" class="form-control" id="nama_unit" name="nama_unit" placeholder="Nama Unit...">
+                                <input type="text" title="Nama Unit" class="form-control" id="nama_unit" name="nama_unit" placeholder="Nama Unit..." onkeyup="ubah_nama(this.value, 'nama_unit')">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -162,10 +162,6 @@
     });
 
     // another function
-    function delspace(param) {
-        var kode_unitx = param.trim();
-        kode_unit.val(kode_unitx);
-    }
     // when photo has been change
     $("#foto_profil").change(function() {
         readURL(this);

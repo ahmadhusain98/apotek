@@ -53,12 +53,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <input type="hidden" name="id" id="id">
-                                <input type="text" title="Kode Vendor" class="form-control" id="kode" name="kode" placeholder="Kode Vendor..." onkeyup="delspace(this.value)">
+                                <input type="text" title="Kode Vendor" class="form-control" id="kode" name="kode" placeholder="Kode Vendor..." onkeyup="delspace(this.value, 'kode')">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" title="Nama Vendor" class="form-control" id="nama" name="nama" placeholder="Nama Vendor...">
+                                <input type="text" title="Nama Vendor" class="form-control" id="nama" name="nama" placeholder="Nama Vendor..." onkeyup="ubah_nama(this.value, 'nama')">
                             </div>
                         </div>
                     </div>
@@ -116,10 +116,6 @@
     });
 
     // another function
-    function delspace(param) {
-        var kodex = param.trim();
-        kode.val(kodex);
-    }
 
     function add_vendor() {
         $('#mod_vendor').modal('show');

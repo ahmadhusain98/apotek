@@ -42,14 +42,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama...">
+                                <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama..." onkeyup="ubah_nama(this.value, 'nama')">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onkeyup="delspace(this.value)" onchange="cekUsername(this.value)">
+                                <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onkeyup="delspace_nocaps(this.value, 'username')" onchange="cekUsername(this.value)">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -144,11 +144,6 @@
 
 <!-- another function -->
 <script>
-    function delspace(param) {
-        var usernamex = param.trim();
-        username.val(usernamex);
-    }
-
     function cekUsername(param) {
         $('#m_member').modal('hide');
         if (param == '' || param == null) {} else {

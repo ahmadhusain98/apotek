@@ -41,7 +41,7 @@
                                 <div class="row">
                                     <label class="control-label col-sm-3">Nama</label>
                                     <div class="col-sm-9">
-                                        <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama..." value="<?= $userdata->nama; ?>">
+                                        <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama..." value="<?= $userdata->nama; ?>" onkeyup="ubah_nama(this.value, 'nama')">
                                     </div>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                                 <div class="row">
                                     <label class="control-label col-sm-3">Tempat Lahir</label>
                                     <div class="col-sm-9">
-                                        <input type="text" title="Tempat Lahir" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Tempat lahir..." value="<?= $userdata->tempat_lahir; ?>">
+                                        <input type="text" title="Tempat Lahir" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Tempat lahir..." value="<?= $userdata->tempat_lahir; ?>" onkeyup="ubah_nama(this.value, 'tempat_lahir')">
                                     </div>
                                 </div>
                             </div>

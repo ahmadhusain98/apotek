@@ -17,7 +17,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama...">
+                      <input type="text" title="Nama" class="form-control" id="nama" name="nama" placeholder="Nama..." onkeyup="ubah_nama(this.value, 'nama')">
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -33,7 +33,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onchange="cekUsername(this.value)">
+                      <input type="text" title="Username" class="form-control" id="username" name="username" placeholder="Username..." onchange="cekUsername(this.value)" onkeyup="delspace_nocaps(this.value, 'username')">
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -57,7 +57,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <input type="text" title="Tempat Lahir" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Tempat Lahir...">
+                      <input type="text" title="Tempat Lahir" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Tempat Lahir..." onkeyup="ubah_nama(this.value, 'tempat_lahir')">
                     </div>
                   </div>
                   <div class="col-md-6">
