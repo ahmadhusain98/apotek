@@ -29,6 +29,7 @@
                             <th>Gudang</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th>User</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
