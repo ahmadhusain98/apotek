@@ -24,6 +24,8 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
         if ($kondisi4 != '') {
             $CI->db->where('barang.satuan', $kondisi4);
         }
+    } else if ($kondisi == 'For_harga_barang') {
+        $CI->db->where('harga_unit.kode_barang', $kondisi2);
     }
     $i = 0;
     foreach ($column_search as $item) {
@@ -92,6 +94,8 @@ function count_all($table, $column_order, $column_search, $order, $kondisi, $kon
         if ($kondisi4 != '') {
             $CI->db->where('barang.satuan', $kondisi4);
         }
+    } else if ($kondisi == 'For_harga_barang') {
+        $CI->db->where('harga_unit.kode_barang', $kondisi2);
     }
     return $CI->db->count_all_results();
 }

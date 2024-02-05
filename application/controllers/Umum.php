@@ -299,6 +299,7 @@ class Umum extends CI_Controller
         $sess = $this->session->userdata('username');
         $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
         $unit = $this->session->userdata('kode_unit');
+        $now = date('Y-m-d');
 
         if ($kode_barang == '') {
             $judul_form = 'Tambah Barang';
@@ -313,7 +314,7 @@ class Umum extends CI_Controller
         }
 
         $data = [
-            'judul' => 'Tambah Barang',
+            'judul' => $judul_form,
             'menu' => 'Umum/barang',
             'kategori' => $this->M_central->getResult('m_kategori'),
             'satuan' => $this->M_central->getResult('m_satuan'),
@@ -323,9 +324,48 @@ class Umum extends CI_Controller
             'judul_form' => $judul_form,
             'barang' => $barang,
             'harga' => $harga,
+            'list_ajax' => 'Umum/list_harga_barang_unit/' . $kode_barang,
+            'm_unit' => $this->M_central->getDataResult('m_unit', ['tgl_selesai >= ' => $now]),
         ];
 
         $this->template->load('Template/Content', 'Umum/Form_barang', $data);
+    }
+
+    public function list_harga_barang_unit($kode_barang = '')
+    {
+        $table          = 'harga_unit';
+        $column_order   = ['harga_unit.kode_unit', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
+        $column_search  = ['harga_unit.kode_unit', 'harga_unit.harga_beli', 'harga_unit.harga_beli_ppn', 'harga_unit.harga_net', 'harga_unit.harga_jual'];
+        $order          = ['harga_unit.kode_unit', 'ASC'];
+        $kondisi        = 'For_harga_barang';
+        $kondisi2       = $kode_barang;
+
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+
+        $data   = [];
+        $no     = 1;
+        $list   = get_datatables($table, $column_order, $column_search, $order, $kondisi, $kondisi2);
+        foreach ($list as $l) {
+            $row              = [];
+
+            $row[]            = '<div class="text-right">' . $no . '</div>';
+            $row[]            = $l->kode_unit;
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_beli) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_beli_ppn) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_net) . '</div>';
+            $row[]            = '<div class="text-right">Rp. ' . number_format($l->harga_jual) . '</div>';
+
+            $data[]           = $row;
+            $no++;
+        }
+        $output = [
+            "draw"            => $_POST['draw'],
+            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
+            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi, $kondisi2),
+            "data"            => $data,
+        ];
+        echo json_encode($output);
     }
 
     public function proses_barang_aksi($param)
@@ -358,26 +398,36 @@ class Umum extends CI_Controller
             'deskripsi' => $deskripsi,
         ];
 
-        $data_harga = [
-            'kode_unit' => $kode_unit,
-            'kode_barang' => $kode,
-            'harga_beli' => $harga_beli,
-            'kena_pajak' => $kena_pajak,
-            'harga_beli_ppn' => $harga_beli_ppn,
-            'harga_net' => $harga_net,
-            'harga_jual' => $harga_jual,
-        ];
+        $unit = $this->M_central->getResult('m_unit');
+        foreach ($unit as $un) {
+            if ($param < 2) {
+                $data_harga = [
+                    'kode_unit' => $un->kode_unit,
+                    'kode_barang' => $kode,
+                    'harga_beli' => $harga_beli,
+                    'kena_pajak' => $kena_pajak,
+                    'harga_beli_ppn' => $harga_beli_ppn,
+                    'harga_net' => $harga_net,
+                    'harga_jual' => $harga_jual,
+                ];
+                $cek = $this->M_central->simpanData('harga_unit', $data_harga);
+            } else {
+                $data_harga = [
+                    'kode_barang' => $kode,
+                    'harga_beli' => $harga_beli,
+                    'kena_pajak' => $kena_pajak,
+                    'harga_beli_ppn' => $harga_beli_ppn,
+                    'harga_net' => $harga_net,
+                    'harga_jual' => $harga_jual,
+                ];
+                $cek = $this->M_central->updateData('harga_unit', $data_harga, ['kode_barang' => $kode, 'kode_unit' => $kode_unit]);
+            }
+        }
 
         if ($param < 2) {
-            $cek = [
-                $this->M_central->simpanData('barang', $data_barang),
-                $this->M_central->simpanData('harga_unit', $data_harga),
-            ];
+            $cek = $this->M_central->simpanData('barang', $data_barang);
         } else {
-            $cek = [
-                $this->M_central->updateData('barang', $data_barang, ['kode' => $kode]),
-                $this->M_central->updateData('harga_unit', $data_harga, ['kode_barang' => $kode, 'kode_unit' => $kode_unit]),
-            ];
+            $cek = $this->M_central->updateData('barang', $data_barang, ['kode' => $kode]);
         }
 
         if ($cek) {

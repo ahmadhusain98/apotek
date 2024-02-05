@@ -1,11 +1,13 @@
 <form method="post" id="formBarang">
     <div class="h4 mb-3 text-gray-800"><?= $judul_form ?></div>
 
-    <div class=" card shadow mb-4">
+    <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Form barang
                 <button type="button" class="btn btn-sm float-right btn-danger" title="Kembali" onclick="get_menu('<?= $menu ?>')"><i class="fa-solid fa-circle-arrow-left"></i> Kembali</button>
-                <button type="button" class="btn btn-sm float-right btn-info mr-1" title="Kembali" onclick="infoHarga()"><i class="fa-solid fa-circle-question"></i> Harga di unit lain</button>
+                <?php if ($prosesx > 1) : ?>
+                    <a type="button" class="btn btn-sm float-right btn-info mr-1" title="Harga di unit lain" href="#showMarginHarga"><i class="fa-solid fa-circle-question"></i> Harga di unit lain</a>
+                <?php endif; ?>
             </h6>
         </div>
         <div class="card-body">
@@ -128,7 +130,42 @@
     </div>
 </form>
 
+<?php if ($prosesx > 1) : ?>
+
+    <div class="row" id="showMarginHarga">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Harga di masing-masing unit</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="tableHarga" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th rowspan="2" style="width: 5%">No</th>
+                                    <th rowspan="2">Kode Unit</th>
+                                    <th colspan="4" class="text-center">Harga</th>
+                                </tr>
+                                <tr class="bg-primary text-white">
+                                    <th>Beli</th>
+                                    <th>Beli PPN</th>
+                                    <th>NET</th>
+                                    <th>Jual</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php endif; ?>
+
 <script>
+    var table = $('#tableHarga');
+
     $('.select2_all').select2({
         width: '100%',
         heigh: 'auto',
@@ -153,7 +190,9 @@
 
     $(document).ready(function() {
         btnHide.hide();
-        harga_net.attr('readonly', true);
+        <?php if ($prosesx < 2) : ?>
+            harga_net.attr('readonly', true);
+        <?php endif; ?>
     });
 
     function cek_pajak(pajak) {
