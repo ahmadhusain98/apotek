@@ -456,6 +456,55 @@
       $('#' + idForm).val(kodex);
     }
 
+    function cekKode(param, idForm, urlForm, modal) {
+      $.ajax({
+        url: siteUrl + urlForm + param,
+        type: 'POST',
+        dataType: 'JSON',
+        success: function(result) {
+          if (result == '' || result == null) {
+            $('#' + modal).modal('hide');
+            btnShow.show();
+            btnHide.hide();
+
+            Swal.fire({
+              title: '404',
+              text: 'Tidak ada respons dari sistem',
+              icon: 'error'
+            }).then((value) => {
+              $('#' + modal).modal('show');
+            });
+            return;
+          } else {
+            if (result.response == 1) {
+              $('#' + modal).modal('hide');
+              $('#' + idForm).val('');
+              btnShow.show();
+              btnHide.hide();
+
+              Swal.fire({
+                title: 'Kode',
+                text: 'Sudah digunakan, silahkan gunakan kode lain!',
+                icon: 'error'
+              }).then((value) => {
+                $('#' + modal).modal('show');
+              });
+              return;
+            }
+          }
+        },
+        error: function(result) {
+          $('#' + modal).modal('hide');
+          Swal.fire({
+            title: '501',
+            text: 'Error Sistem',
+            icon: 'error'
+          })
+          return;
+        }
+      });
+    }
+
     function logout() {
       Swal.fire({
         title: "Keluar?",

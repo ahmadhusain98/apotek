@@ -164,7 +164,7 @@ class Umum extends CI_Controller
         if ($param < 2) {
             $cek = $this->M_central->simpanData('m_vendor', $data);
         } else {
-            $cek = $this->M_central->simpanData('m_vendor', $data, ['id' => $id]);
+            $cek = $this->M_central->updateData('m_vendor', $data, ['id' => $id]);
         }
 
         if ($cek) {
@@ -179,6 +179,17 @@ class Umum extends CI_Controller
         $cek = $this->M_central->delData('m_vendor', ['id' => $id]);
 
         if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function cek_vendor($kode)
+    {
+        $cek = $this->M_central->jumdata('m_vendor', ['kode' => $kode]);
+
+        if ($cek > 0) {
             echo json_encode(['response' => 1]);
         } else {
             echo json_encode(['response' => 0]);
@@ -445,6 +456,158 @@ class Umum extends CI_Controller
         ];
 
         if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    /**
+     * GUDANG
+     */
+
+    public function gudang()
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        $data = [
+            'judul' => 'Vendor',
+            'list_ajax' => 'Umum/list_gudang',
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+        ];
+        $this->template->load('Template/Content', 'Umum/Gudang', $data);
+    }
+
+    public function list_gudang()
+    {
+        $table          = 'm_gudang';
+        $column_order   = ['id', 'kode', 'nama', 'alamat', 'nohp', 'status'];
+        $column_search  = ['id', 'kode', 'nama', 'alamat', 'nohp', 'status'];
+        $order          = ['nama', 'ASC'];
+        $kondisi        = '';
+
+        $sess           = $this->session->userdata('username');
+        $userdata       = $this->M_central->getDataRow('user', ['username' => $sess]);
+
+        $data           = [];
+        $no             = 1;
+        $list           = get_datatables($table, $column_order, $column_search, $order, $kondisi);
+        foreach ($list as $l) {
+            $cek_aksi_role    = $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]);
+            $row              = [];
+            if ($l->status > 0) {
+                $status = '<div class="text-center"><span class="badge badge-success">Aktif</span></div>';
+            } else {
+                $status = '<div class="text-center"><span class="badge badge-danger">Non-aktif</span></div>';
+            }
+
+            $row[]            = '<div class="text-right">' . $no . '</div>';
+            $row[]            = $l->kode;
+            $row[]            = $l->nama;
+            $row[]            = $l->alamat;
+            $row[]            = $l->nohp;
+            $row[]            = $status;
+            if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0) && ($cek_aksi_role->setuju > 0)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" onclick="deleted(' . "'" . $l->id . "', '" . $l->nama . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0) && ($cek_aksi_role->setuju < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" onclick="deleted(' . "'" . $l->id . "', '" . $l->nama . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1) && ($cek_aksi_role->setuju > 0)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus < 1) && ($cek_aksi_role->setuju < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" onclick="updated(' . "'" . $l->id . "'" . ')"><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1) && ($cek_aksi_role->setuju > 0)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else if (($cek_aksi_role->ubah < 1) && ($cek_aksi_role->hapus < 1) && ($cek_aksi_role->setuju < 1)) {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" disabled><i class="fa fa-ban"></i></button>
+                </div>';
+            } else {
+                $row[]            = '<div class="text-center">
+                    <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="tooltip" title="Ubah Data ' . $l->nama . '" disabled><i class="fa-solid fa-repeat"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm mb-1" data-bs-toggle="tooltip" title="Hapus Data ' . $l->nama . '" onclick="deleted(' . "'" . $l->id . "', '" . $l->nama . "'" . ')"><i class="fa fa-ban"></i></button>
+                </div>';
+            }
+
+            $data[]           = $row;
+            $no++;
+        }
+        $output = [
+            "draw"            => $_POST['draw'],
+            "recordsTotal"    => count_all($table, $column_order, $column_search, $order, $kondisi),
+            "recordsFiltered" => count_filtered($table, $column_order, $column_search, $order, $kondisi),
+            "data"            => $data,
+        ];
+        echo json_encode($output);
+    }
+
+    public function proses_gudang($param)
+    {
+        $id = $this->input->post('id');
+        $kode = $this->input->post('kode');
+        $nama = $this->input->post('nama');
+        $nohp = $this->input->post('nohp');
+        $status = $this->input->post('status_aktif');
+        $alamat = $this->input->post('alamat');
+
+        $data = [
+            'kode' => $kode,
+            'nama' => $nama,
+            'nohp' => $nohp,
+            'alamat' => $alamat,
+            'status' => $status,
+        ];
+
+        if ($param < 2) {
+            $cek = $this->M_central->simpanData('m_gudang', $data);
+        } else {
+            $cek = $this->M_central->updateData('m_gudang', $data, ['id' => $id]);
+        }
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function getGudang($id)
+    {
+        $data = $this->M_central->getDataRow('m_gudang', ['id' => $id]);
+        echo json_encode($data);
+    }
+
+    public function deleted_gudang_proses($id)
+    {
+        $cek = $this->M_central->delData('m_gudang', ['id' => $id]);
+
+        if ($cek) {
+            echo json_encode(['response' => 1]);
+        } else {
+            echo json_encode(['response' => 0]);
+        }
+    }
+
+    public function cek_gudang($kode)
+    {
+        $cek = $this->M_central->jumdata('m_gudang', ['kode' => $kode]);
+
+        if ($cek > 0) {
             echo json_encode(['response' => 1]);
         } else {
             echo json_encode(['response' => 0]);
