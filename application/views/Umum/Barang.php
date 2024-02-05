@@ -1,5 +1,5 @@
 <form method="post" id="formUnit">
-    <div class="h4 mb-3 text-gray-800">Barang
+    <div class="h4 mb-3 text-gray-800">Umum / barang
         <div class="btn-group float-right" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-dark btn-sm" disabled>Video Tutorial <i class="fa fa-arrow-alt-circle-right"></i></button>
             <button type="button" class="btn btn-info btn-sm" title="Tutorial Tambah" onclick="tutor(1)"><i class="fa fa-plus"></i></button>
