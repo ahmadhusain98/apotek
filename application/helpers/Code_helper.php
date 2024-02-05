@@ -78,6 +78,8 @@ function kode_barang($kategori, $satuan)
 {
   $CI = &get_instance();
 
+  $kode_unit = $CI->session->userdata("kode_unit");
+
   $kode_kategori = explode(" ", $kategori);
   $kode_kat = "";
 
@@ -93,9 +95,9 @@ function kode_barang($kategori, $satuan)
   }
 
   $number       = 1;
-  $awal         = $kode_kat . '-' . $kode_sat;
+  $awal         = $kode_unit . "-" . strtoupper($kode_kat) . '-' . strtoupper($kode_sat);
   $limit_awal   = strlen($awal);
-  $limit        = 10;
+  $limit        = 15;
   $result_limit = $limit - $limit_awal;
 
   $lastNumber   = $CI->db->query('SELECT kode FROM barang WHERE kode LIKE "' . $awal . '%" ORDER BY kode DESC LIMIT 1')->row();
