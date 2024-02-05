@@ -17,12 +17,12 @@
             <div class="table-responsive">
                 <table class="table table-bordered" id="tablePengelolaUnit" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
+                        <tr class="bg-primary text-white">
                             <th rowspan="2" width="5%">No</th>
                             <th rowspan="2">Username</th>
                             <th class="text-center" colspan="<?= count($cabang) ?>">Cabang</th>
                         </tr>
-                        <tr>
+                        <tr class="bg-primary text-white">
                             <?php foreach ($cabang as $c) : ?>
                                 <th><?= $c->nama_unit ?></th>
                             <?php endforeach; ?>

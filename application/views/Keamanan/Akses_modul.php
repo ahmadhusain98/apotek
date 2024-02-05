@@ -11,14 +11,14 @@
             <div class="table-responsive">
                 <table class="table table-bordered" id="tableAksesModul" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
+                        <tr class="bg-primary text-white">
                             <th rowspan="2" width="5%">No</th>
                             <th rowspan="2">Tingkatan</th>
                             <th class="text-center" colspan="<?= count($modul) ?>">Modul</th>
                         </tr>
-                        <tr>
+                        <tr class="bg-primary text-white">
                             <?php foreach ($modul as $m) : ?>
-                                <td><?= $m->nama ?></td>
+                                <th><?= $m->nama ?></th>
                             <?php endforeach; ?>
                         </tr>
                     </thead>

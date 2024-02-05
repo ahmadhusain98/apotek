@@ -16,7 +16,7 @@
           <div class="table-responsive">
             <table class="table table-bordered" id="tableModulDari" width="100%" cellspacing="0">
               <thead>
-                <tr>
+                <tr class="bg-primary text-white">
                   <th width="5%">No</th>
                   <th>Modul</th>
                   <th width="5%">Aksi</th>
@@ -47,7 +47,7 @@
           <div class="table-responsive">
             <table class="table table-bordered" id="tableModulKe" width="100%" cellspacing="0">
               <thead>
-                <tr>
+                <tr class="bg-primary text-white">
                   <th width="5%">No</th>
                   <th>Modul</th>
                   <th width="5%">Aksi</th>

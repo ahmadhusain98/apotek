@@ -53,7 +53,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered" id="tableUnit" width="100%" cellspacing="0">
                             <thead>
-                                <tr>
+                                <tr class="bg-primary text-white">
                                     <th rowspan="2" width="5%">No</th>
                                     <th rowspan="2">Unit</th>
                                     <th rowspan="2">Kode</th>
@@ -64,7 +64,7 @@
                                     <th rowspan="2">Deskripsi</th>
                                     <th rowspan="2">Aksi</th>
                                 </tr>
-                                <tr>
+                                <tr class="bg-primary text-white">
                                     <th>Beli</th>
                                     <th>Beli + PPN</th>
                                     <th>NET</th>

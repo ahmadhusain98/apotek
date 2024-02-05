@@ -13,7 +13,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered" id="tableMember" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
+                        <tr class="bg-primary text-white">
                             <th width="5%">No</th>
                             <th>Username</th>
                             <th>Nama</th>

@@ -22,7 +22,7 @@
         <div class="table-responsive">
           <table class="table table-bordered" id="tableModul" width="100%" cellspacing="0">
             <thead>
-              <tr>
+              <tr class="bg-primary text-white">
                 <th width="5%">No</th>
                 <th>Nama Modul</th>
                 <th width="10%">Aksi</th>
@@ -74,7 +74,7 @@
         <div class="table-responsive">
           <table class="table table-bordered" id="tableMenu" width="100%" cellspacing="0">
             <thead>
-              <tr>
+              <tr class="bg-primary text-white">
                 <th width="5%">No</th>
                 <th>Nama Menu</th>
                 <th>Ikon</th>
@@ -134,7 +134,7 @@
         <div class="table-responsive">
           <table class="table table-bordered" id="tableSubMenu" width="100%" cellspacing="0">
             <thead>
-              <tr>
+              <tr class="bg-primary text-white">
                 <th width="5%">No</th>
                 <th>Nama Sub Menu</th>
                 <th>Bagian Menu</th>
