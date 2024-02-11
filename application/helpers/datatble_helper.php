@@ -26,6 +26,10 @@ function _get_datatables_query($table, $column_order, $column_search, $order, $k
         }
     } else if ($kondisi == 'For_harga_barang') {
         $CI->db->where('harga_unit.kode_barang', $kondisi2);
+    } else if ($kondisi == 'pre_order') {
+        $CI->db->join('m_vendor AS v', 'v.kode = ' . $table . '.kode_vendor');
+        $CI->db->join('m_gudang AS g', 'g.kode = ' . $table . '.kode_gudang');
+        $CI->db->where('kode_unit', $kondisi2);
     }
     $i = 0;
     foreach ($column_search as $item) {

@@ -24,9 +24,9 @@
                         <tr class="bg-primary text-white">
                             <th width="5%">No</th>
                             <th>Invoice</th>
-                            <th>Kode Unit</th>
                             <th>Vendor</th>
                             <th>Gudang</th>
+                            <th>Pajak</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>User</th>
@@ -39,3 +39,7 @@
         </div>
     </div>
 </form>
+
+<script>
+    var table = $('#tablePreOrder');
+</script>
