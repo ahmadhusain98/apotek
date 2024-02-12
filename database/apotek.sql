@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 04, 2024 at 07:59 PM
+-- Generation Time: Feb 12, 2024 at 06:05 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -60,7 +60,7 @@ INSERT INTO `akses_modul` (`id`, `kode_role`, `id_modul`) VALUES
 (22, 'R0004', 7),
 (23, 'R0003', 8),
 (24, 'R0004', 8),
-(25, 'R0001', 1);
+(27, 'R0001', 1);
 
 -- --------------------------------------------------------
 
@@ -91,12 +91,20 @@ INSERT INTO `akses_unit` (`id`, `username`, `kode_unit`) VALUES
 
 CREATE TABLE `barang` (
   `id` int(11) NOT NULL,
-  `kode` varchar(10) NOT NULL,
+  `kode` varchar(15) NOT NULL,
   `nama` varchar(200) NOT NULL,
   `kategori` varchar(10) NOT NULL,
   `satuan` varchar(10) NOT NULL,
   `deskripsi` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `barang`
+--
+
+INSERT INTO `barang` (`id`, `kode`, `nama`, `kategori`, `satuan`, `deskripsi`) VALUES
+(4, 'DIY-OR-P0000001', 'Redoxon', 'KAT0000001', 'SAT0000001', 'obat penambah darah'),
+(5, 'DIY-OR-P0000002', 'Oskadon', 'KAT0000001', 'SAT0000001', 'obat sakit kepala');
 
 -- --------------------------------------------------------
 
@@ -107,12 +115,40 @@ CREATE TABLE `barang` (
 CREATE TABLE `harga_unit` (
   `id` int(11) NOT NULL,
   `kode_unit` varchar(10) NOT NULL,
-  `kode_barang` varchar(10) NOT NULL,
+  `kode_barang` varchar(15) NOT NULL,
   `harga_beli` int(11) NOT NULL,
   `kena_pajak` int(1) NOT NULL DEFAULT 0,
   `harga_beli_ppn` int(11) NOT NULL,
   `harga_net` int(11) NOT NULL,
   `harga_jual` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `harga_unit`
+--
+
+INSERT INTO `harga_unit` (`id`, `kode_unit`, `kode_barang`, `harga_beli`, `kena_pajak`, `harga_beli_ppn`, `harga_net`, `harga_jual`) VALUES
+(4, 'DIY', 'DIY-OR-P0000001', 2500, 1, 2775, 3000, 2700),
+(5, 'MGL', 'DIY-OR-P0000001', 2000, 1, 2220, 2500, 2500),
+(6, 'DIY', 'DIY-OR-P0000002', 1500, 1, 1665, 1700, 1700),
+(7, 'MGL', 'DIY-OR-P0000002', 1500, 1, 1665, 1700, 1700);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `h_preorder`
+--
+
+CREATE TABLE `h_preorder` (
+  `id` int(11) NOT NULL,
+  `kode_unit` varchar(10) NOT NULL,
+  `invoice` varchar(15) NOT NULL,
+  `kode_vendor` varchar(15) NOT NULL,
+  `kode_gudang` varchar(15) NOT NULL,
+  `total` int(11) NOT NULL,
+  `pajak` int(11) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT 0,
+  `user` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -148,6 +184,28 @@ INSERT INTO `menu` (`id`, `nama`, `ikon`, `url`, `id_modul`) VALUES
 (13, 'Cabang', '<i class=\"fa-solid fa-building-circle-check\"></i>', 'Cabang', 2),
 (14, 'Umum', '<i class=\"fa-solid fa-globe\"></i>', 'Umum', 2),
 (15, 'Akses Modul', '<i class=\"fa-solid fa-fingerprint\"></i>', 'Akses_modul', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `m_gudang`
+--
+
+CREATE TABLE `m_gudang` (
+  `id` int(11) NOT NULL,
+  `kode` varchar(15) NOT NULL,
+  `nama` varchar(200) NOT NULL,
+  `alamat` text NOT NULL,
+  `nohp` varchar(15) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `m_gudang`
+--
+
+INSERT INTO `m_gudang` (`id`, `kode`, `nama`, `alamat`, `nohp`, `status`) VALUES
+(1, 'APOTEK', 'Gudang Apotek', 'Ruang Apt', '000123', 1);
 
 -- --------------------------------------------------------
 
@@ -306,7 +364,8 @@ CREATE TABLE `m_vendor` (
 --
 
 INSERT INTO `m_vendor` (`id`, `kode`, `nama`, `alamat`, `nohp`, `email`, `trx_terakhir`, `status`) VALUES
-(2, 'Garuda', 'PT. Garuda Nusantara', 'Jl. Magelang Utara', '000123', 'garuda@pt.nusantara', '0000-00-00 00:00:00', 1);
+(2, 'GARUDA', 'PT. Garuda Nusantara', 'Jl. Magelang Utara', '000123', 'garuda@pt.nusantara', '0000-00-00 00:00:00', 1),
+(3, 'JAYA', 'Jaya Kusuma', 'Condong Catur', '000123', 'jaya@kusuma.com', '0000-00-00 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -337,6 +396,23 @@ INSERT INTO `role_aksi` (`id`, `setuju`, `tambah`, `ubah`, `hapus`, `kode_role`)
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stok_barang`
+--
+
+CREATE TABLE `stok_barang` (
+  `id` int(11) NOT NULL,
+  `kode_unit` varchar(10) NOT NULL,
+  `kode_barang` varchar(15) NOT NULL,
+  `kode_gudang` varchar(15) NOT NULL,
+  `terima` int(11) NOT NULL,
+  `keluar` int(11) NOT NULL,
+  `saldo_akhir` int(11) NOT NULL,
+  `no_rak` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sub_menu`
 --
 
@@ -354,7 +430,7 @@ CREATE TABLE `sub_menu` (
 INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (1, 'Pengelola', 'Users/pengelola', 2),
 (2, 'Member', 'Users/member', 2),
-(3, 'PO', 'Pembelian/po', 3),
+(3, 'Pre Order', 'Pembelian/po', 3),
 (4, 'Kategori Barang', 'Inti/kategori', 6),
 (5, 'Satuan Barang', 'Inti/satuan', 6),
 (6, 'Penerimaan Barang', 'Pembelian/penerimaan', 3),
@@ -369,7 +445,8 @@ INSERT INTO `sub_menu` (`id`, `nama`, `url`, `id_menu`) VALUES
 (16, 'Pengelola Unit', 'Cabang/pengelola', 13),
 (18, 'Vendor', 'Umum/vendor', 14),
 (19, 'Jatuh Tempo', 'Inti/tempo', 6),
-(20, 'Barang', 'Umum/barang', 14);
+(20, 'Barang', 'Umum/barang', 14),
+(21, 'Gudang', 'Umum/gudang', 14);
 
 -- --------------------------------------------------------
 
@@ -402,10 +479,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `sandi_ori`, `sandi`, `kode_member`, `foto`, `gender`, `nama`, `alamat`, `nohp`, `email`, `tgl_gabung`, `status_akun`, `status_aktif`, `tgl_lahir`, `tempat_lahir`, `kode_role`) VALUES
-(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'ahmad husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 0, '1998-05-02', 'jakarta', 'R0001'),
+(1, 'admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'A000000001', '573f22a1aa17b366f5489745dc4704e1.jpg', 'P', 'Ahmad Husain', 'DI Yogyakarta', '0895363260970', 'ahmad.ummgl@gmail.com', '2024-01-04', 1, 1, '1998-05-02', 'Jakarta', 'R0001'),
 (5, 'ahmadhusain', 'ahmadhusain', '0a61eae58bcb5869aee9c0ba6753180a', 'A000000002', 'default1.svg', 'P', 'Ahmad Husain', '-', '123', 'ahmad@gmail.com', '2024-01-24', 1, 0, '1998-05-02', 'jakarta', 'R0005'),
 (6, 'user', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'U000000001', 'default2.svg', 'W', 'user', 'mana aja', '123', 'user@gmail.com', '2024-01-24', 1, 0, '2000-01-01', 'mana', 'R0005'),
-(12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'michel', '-', '123', '123@gmail.com', '2024-02-02', 1, 0, '2000-02-02', '-', 'R0001');
+(12, 'admin1', 'admin1', 'e00cf25ad42683b3df678c61f42c6bda', 'A000000002', 'default2.svg', 'W', 'michel', '-', '123', '123@gmail.com', '2024-02-02', 0, 0, '2000-02-02', '-', 'R0001');
 
 -- --------------------------------------------------------
 
@@ -458,9 +535,21 @@ ALTER TABLE `harga_unit`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `h_preorder`
+--
+ALTER TABLE `h_preorder`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `menu`
 --
 ALTER TABLE `menu`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `m_gudang`
+--
+ALTER TABLE `m_gudang`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -512,6 +601,12 @@ ALTER TABLE `role_aksi`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `stok_barang`
+--
+ALTER TABLE `stok_barang`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
@@ -537,7 +632,7 @@ ALTER TABLE `user_aktivasi`
 -- AUTO_INCREMENT for table `akses_modul`
 --
 ALTER TABLE `akses_modul`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `akses_unit`
@@ -549,19 +644,31 @@ ALTER TABLE `akses_unit`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `harga_unit`
 --
 ALTER TABLE `harga_unit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `h_preorder`
+--
+ALTER TABLE `h_preorder`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `m_gudang`
+--
+ALTER TABLE `m_gudang`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `m_kategori`
@@ -603,7 +710,7 @@ ALTER TABLE `m_unit`
 -- AUTO_INCREMENT for table `m_vendor`
 --
 ALTER TABLE `m_vendor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `role_aksi`
@@ -612,10 +719,16 @@ ALTER TABLE `role_aksi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `stok_barang`
+--
+ALTER TABLE `stok_barang`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user`
