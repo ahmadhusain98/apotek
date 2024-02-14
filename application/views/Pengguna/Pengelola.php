@@ -308,15 +308,15 @@
     body.empty();
     if (param == 1) {
       body.append(`<div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola/insert.mp4" allowfullscreen></iframe>
+        <iframe class="embed-responsive-item" src="` + siteUrl + `../assets/tutorial/pengelola/insert.mp4" allowfullscreen></iframe>
       </div>`);
     } else if (param == 2) {
       body.append(`<div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola/update.mp4" allowfullscreen></iframe>
+        <iframe class="embed-responsive-item" src="` + siteUrl + `../assets/tutorial/pengelola/update.mp4" allowfullscreen></iframe>
       </div>`);
     } else {
       body.append(`<div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" src="` + siteUrl + `/assets/tutorial/pengelola/delete.mp4" allowfullscreen></iframe>
+        <iframe class="embed-responsive-item" src="` + siteUrl + `../assets/tutorial/pengelola/delete.mp4" allowfullscreen></iframe>
       </div>`);
     }
   }
