@@ -89,4 +89,28 @@ class Pembelian extends CI_Controller
         ];
         echo json_encode($output);
     }
+
+    public function form_po($invoice = '')
+    {
+        $sess = $this->session->userdata('username');
+        $userdata = $this->M_central->getDataRow('user', ['username' => $sess]);
+        if ($invoice == '') {
+            $judul = 'Tambah PO (Pre Order)';
+            $prosesx = 1;
+        } else {
+            $judul = 'Update PO (Pre Order)';
+            $prosesx = 2;
+        }
+        $data = [
+            'judul' => 'Pre Order',
+            'judul_form' => $judul,
+            'prosesx' => $prosesx,
+            'menu' => 'Pembelian/po',
+            'role_aksi' => $this->M_central->getDataRow('role_aksi', ['kode_role' => $userdata->kode_role]),
+            'gudang' => $this->M_central->getDataResult('m_gudang', ['bagian' => 'FARMASI', 'status' => '1']),
+            'vendor' => $this->M_central->getDataResult('m_vendor', ['status' => '1']),
+            'cabang' => $this->session->userdata('kode_unit'),
+        ];
+        $this->template->load('Template/Content', 'Pembelian/Form_po', $data);
+    }
 }

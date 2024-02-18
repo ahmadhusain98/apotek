@@ -53,6 +53,16 @@
 </head>
 
 <style>
+  /* .select2-selection--single {
+    height: 100% !important;
+  }
+
+  .select2-selection__rendered {
+    word-wrap: break-word !important;
+    text-overflow: inherit !important;
+    white-space: normal !important;
+  } */
+
   .select2-selection__rendered {
     line-height: 31px !important;
   }
@@ -409,6 +419,43 @@
       heigh: 'auto',
     })
 
+    // select2 master
+    initailizeSelect2_barang('');
+
+    function initailizeSelect2_barang(cabang) {
+      $('.select2_barang').select2({
+        width: '100%',
+        heigh: 'auto',
+        allowClear: true,
+        placeholder: $(this).data('placeholder'),
+        multiple: false,
+        dropdownAutoWidth: true,
+        language: {
+          inputTooShort: function() {
+            return 'Ketikan Nomor minimal 2 huruf';
+          }
+        },
+        ajax: {
+          url: siteUrl + 'Select2_master/data_barang/' + cabang,
+          type: "POST",
+          dataType: 'JSON',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    }
+    // end select2 master
+
     function formatRupiah(valx, idForm) {
 
       if (valx == '') {
@@ -578,10 +625,6 @@
     <?php $this->load->view('datatable'); ?>
 
   <?php endif; ?>
-
-  <script>
-
-  </script>
 </body>
 
 </html>

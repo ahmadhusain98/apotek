@@ -481,8 +481,8 @@ class Umum extends CI_Controller
     public function list_gudang()
     {
         $table          = 'm_gudang';
-        $column_order   = ['id', 'kode', 'nama', 'alamat', 'nohp', 'status'];
-        $column_search  = ['id', 'kode', 'nama', 'alamat', 'nohp', 'status'];
+        $column_order   = ['id', 'kode', 'nama', 'bagian', 'nohp', 'status'];
+        $column_search  = ['id', 'kode', 'nama', 'bagian', 'nohp', 'status'];
         $order          = ['nama', 'ASC'];
         $kondisi        = '';
 
@@ -504,7 +504,7 @@ class Umum extends CI_Controller
             $row[]            = '<div class="text-right">' . $no . '</div>';
             $row[]            = $l->kode;
             $row[]            = $l->nama;
-            $row[]            = $l->alamat;
+            $row[]            = $l->bagian;
             $row[]            = $l->nohp;
             $row[]            = $status;
             if (($cek_aksi_role->ubah > 0) && ($cek_aksi_role->hapus > 0) && ($cek_aksi_role->setuju > 0)) {
@@ -563,13 +563,13 @@ class Umum extends CI_Controller
         $nama = $this->input->post('nama');
         $nohp = $this->input->post('nohp');
         $status = $this->input->post('status_aktif');
-        $alamat = $this->input->post('alamat');
+        $bagian = $this->input->post('bagian');
 
         $data = [
             'kode' => $kode,
             'nama' => $nama,
             'nohp' => $nohp,
-            'alamat' => $alamat,
+            'bagian' => $bagian,
             'status' => $status,
         ];
 

@@ -25,7 +25,7 @@
                             <th width="5%">No</th>
                             <th>Kode</th>
                             <th>Nama</th>
-                            <th>Alamat</th>
+                            <th>Bagian</th>
                             <th>No Hp</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -79,7 +79,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <textarea name="alamat" title="Alamat" id="alamat" class="form-control" placeholder="Alamat..."></textarea>
+                                <select name="bagian" id="bagian" class="form-control select2_all" data-placeholder="Pilih Bagian...">
+                                    <option value="">Pilih Bagian...</option>
+                                    <option value="FARMASI">FARMASI</option>
+                                    <option value="LOGISTIK">LOGISTIK</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -106,7 +110,7 @@
     var nama = $('#nama');
     var nohp = $('#nohp');
     var status_aktif = $('#status_aktif');
-    var alamat = $('#alamat');
+    var bagian = $('#bagian');
     var prosesx = $('#prosesx');
 
     const form = $('#formGudang');
@@ -128,7 +132,7 @@
         nama.val('');
         nohp.val('');
         status_aktif.val('').change();
-        alamat.val('');
+        bagian.val('');
         prosesx.val(1);
     }
 
@@ -147,7 +151,7 @@
                 nama.val(result.nama);
                 nohp.val(result.nohp);
                 status_aktif.val(result.status).change();
-                alamat.val(result.alamat);
+                bagian.val(result.bagian).change();
                 prosesx.val(2);
             },
             error: function(result) {
@@ -228,7 +232,7 @@
             return;
         }
 
-        if (alamat.val() == '') {
+        if (bagian.val() == '') {
             btnShow.show();
             btnHide.hide();
 

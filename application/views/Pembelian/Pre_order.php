@@ -13,7 +13,7 @@
             <h6 class="m-0 font-weight-bold text-primary">List data pre order
                 <button type="button" class="btn btn-sm float-right" style="background-color: transparent; border: 0px;" title="Informasi" onclick="forInfo()"><i class="fa fa-2x fa-info-circle text-info"></i></button>
                 <?php if ($role_aksi->tambah > 0) : ?>
-                    <button class="btn btn-primary btn-sm float-right" type="button" onclick="add_vendor()"><i class="fa fa-plus"></i> Tambah List</button>
+                    <button class="btn btn-primary btn-sm float-right" type="button" onclick="get_menu('Pembelian/form_po')"><i class="fa fa-plus"></i> Tambah List</button>
                 <?php endif; ?>
             </h6>
         </div>
