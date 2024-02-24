@@ -41,8 +41,8 @@
   <script src="<?= base_url() ?>../assets/js/demo/datatables-demo.js"></script>
 
   <!-- Select2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link href="<?= base_url() ?>../assets/css/select2.min.css" rel="stylesheet" />
+  <script src="<?= base_url() ?>../assets/js/select2.min.js"></script>
 
   <!-- animate -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -419,43 +419,6 @@
       heigh: 'auto',
     })
 
-    // select2 master
-    initailizeSelect2_barang('');
-
-    function initailizeSelect2_barang(cabang) {
-      $('.select2_barang').select2({
-        width: '100%',
-        heigh: 'auto',
-        allowClear: true,
-        placeholder: $(this).data('placeholder'),
-        multiple: false,
-        dropdownAutoWidth: true,
-        language: {
-          inputTooShort: function() {
-            return 'Ketikan Nomor minimal 2 huruf';
-          }
-        },
-        ajax: {
-          url: siteUrl + 'Select2_master/data_barang/' + cabang,
-          type: "POST",
-          dataType: 'JSON',
-          delay: 100,
-          data: function(params) {
-            return {
-              searchTerm: params.term
-            };
-          },
-          processResults: function(response) {
-            return {
-              results: response
-            };
-          },
-          cache: true
-        }
-      });
-    }
-    // end select2 master
-
     function formatRupiah(valx, idForm) {
 
       if (valx == '') {
@@ -607,7 +570,44 @@
         }
       });
     }
+
+    initailizeSelect2_barang();
+
+    function initailizeSelect2_barang() {
+      $('.select2_barang').select2({
+        width: '100%',
+        heigh: 'auto',
+        allowClear: true,
+        placeholder: $(this).data('placeholder'),
+        multiple: false,
+        dropdownAutoWidth: true,
+        language: {
+          inputTooShort: function() {
+            return 'Ketikan minimal 2 huruf';
+          }
+        },
+        ajax: {
+          url: siteUrl + 'Select2_master/data_barang',
+          type: 'POST',
+          dataType: 'JSON',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    }
   </script>
+
+  <?php $this->load->view('Select2_function'); ?>
 
   <!-- Bootstrap core JavaScript-->
   <script src="<?= base_url() ?>../assets/vendor/jquery/jquery.min.js"></script>

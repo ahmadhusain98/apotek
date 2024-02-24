@@ -3,9 +3,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form <i>pre order</i>
-                <button type="button" class="btn btn-sm float-right btn-danger" title="Kembali" onclick="get_menu('<?= $menu ?>')"><i class="fa-solid fa-circle-arrow-left"></i> Kembali</button>
-            </h6>
+            <h6 class="m-0 font-weight-bold text-primary">Form <i>pre order</i></h6>
         </div>
         <div class="card-body">
             <div class="row">
@@ -129,7 +127,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="tableHarga" width="100%">
+                        <table class="table table-bordered" id="tableBarang" width="100%">
                             <thead>
                                 <tr class="bg-primary text-white">
                                     <th rowspan="2" style="width: 5%">Hapus</th>
@@ -146,45 +144,27 @@
                                     <th style="width: 10%">(Rp)</th>
                                 </tr>
                             </thead>
-                            <tbody id="table_body">
-                                <tr id="row_po1">
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="hapus_col('1')"><i class="fa fa-times-circle"></i></button>
-                                    </td>
-                                    <td style="width: 30%">
-                                        <select name="kode_barang[]" id="kode_barang1" class="form-control select2_barang input-group-lg" data-placeholder="Pilih Barang..."></select>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="satuan[]" id="satuan1" class="form-control" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="harga[]" id="harga1" class="form-control text-right" readonly value="0">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="qty[]" id="qty1" class="form-control text-right" value="1">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="discpr[]" id="discpr1" class="form-control text-right" readonly value="0">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="discrp[]" id="discrp1" class="form-control text-right" readonly value="0">
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" name="ppn[]" id="ppn1" class="form-control">
-                                        <input type="hidden" name="ppnrp[]" id="ppnrp1" value="0">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="jumlah[]" id="jumlah1" class="form-control text-right" readonly value="0">
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody id="table_body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <button class="btn btn-primary" type="button" style="width: 100%;" onclick="tambah_row()"><i class="fa fa-plus-circle"></i> Tambah Barang</button>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="button" style="width: 100%;" onclick="tambah_row()"><i class="fa fa-plus-circle"></i> Tambah Barang</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-danger" style="width: 100%;" title="Kembali" onclick="get_menu('<?= $menu ?>')"><i class="fa-solid fa-circle-arrow-left"></i> Kembali ke daftar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-9">
                     <div class="card">
@@ -235,7 +215,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button type="button" class="btn btn-danger" style="width: 100%;" onclick="reset_detail()"><i class="fa fa-refresh"></i> <i>Reset Data Detail</i></button>
+                                    <button type="button" class="btn btn-warning" style="width: 100%;" onclick="reset_detail()"><i class="fa fa-refresh"></i> <i>Reset Data Detail</i></button>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -257,12 +237,10 @@
 </form>
 
 <script>
-    $(document).ready(function() {
-        var cabang = '<?= $cabang; ?>';
-        initailizeSelect2_barang(cabang);
-    });
+    $(document).ready(function() {});
 
-    var row = 2;
+    let Currency;
+    var row = 1;
 
     function tambah_row() {
         var body = $('#table_body');
@@ -271,33 +249,35 @@
                 <button type="button" class="btn btn-danger btn-sm" onclick="hapus_col('${row}')"><i class="fa fa-times-circle"></i></button>
             </td>
             <td style="width: 30%">
-                <select name="kode_barang[]" id="kode_barang${row}" class="form-control select2_barang" data-placeholder="Pilih Barang..."></select>
+                <select name="kode_barang[]" id="kode_barang${row}" class="form-control select2_barang" data-placeholder="Pilih Barang..." onchange="tampil_barang(this.value, ${row})"></select>
             </td>
             <td>
                 <input type="text" name="satuan[]" id="satuan${row}" class="form-control" readonly>
             </td>
             <td>
-                <input type="text" name="harga[]" id="harga${row}" class="form-control text-right" readonly value="0">
+                <input type="text" name="harga[]" id="harga${row}" class="form-control text-right" readonly value="0.00">
             </td>
             <td>
-                <input type="text" name="qty[]" id="qty${row}" class="form-control text-right" value="1">
+                <input type="text" name="qty[]" id="qty${row}" class="form-control text-right" value="1.00" onchange="cektotal(${row})">
             </td>
             <td>
-                <input type="text" name="discpr[]" id="discpr${row}" class="form-control text-right" readonly value="0">
+                <input type="text" name="discpr[]" id="discpr${row}" class="form-control text-right" value="0.00" onchange="totaldisc(${row})">
             </td>
             <td>
-                <input type="text" name="discrp[]" id="discrp${row}" class="form-control text-right" readonly value="0">
+                <input type="text" name="discrp[]" id="discrp${row}" class="form-control text-right" value="0.00" onchange="totalcol(${row})">
             </td>
             <td>
                 <input type="checkbox" name="ppn[]" id="ppn${row}" class="form-control">
-                <input type="hidden" name="ppnrp[]" id="ppnrp${row}" value="0">
+                <input type="hidden" name="ppnrp[]" id="ppnrp${row}" value="0.00">
             </td>
             <td>
-                <input type="text" name="jumlah[]" id="jumlah${row}" class="form-control text-right" readonly value="0">
+                <input type="text" name="jumlah[]" id="jumlah${row}" class="form-control text-right" readonly value="0.00">
             </td>
-        </tr>`);
-        var cabang = '<?= $cabang ?>';
-        initailizeSelect2_barang(cabang);
+        </tr>
+        
+        <link href="<?= base_url() ?>../assets/css/select2.min.css" rel="stylesheet" />
+        <script src="<?= base_url() ?>../assets/js/select2.min.js"/>`);
+        initailizeSelect2_barang();
         row++;
     }
 
@@ -309,4 +289,79 @@
         $('#table_body').empty();
         tambah_row();
     }
+
+    function tampil_barang(kode_barang, col) {
+        if (kode_barang == "" || kode_barang == null) {
+            Swal.fire({
+                title: 'Kode Barang',
+                text: 'Tidak ditermukan!',
+                icon: 'error'
+            });
+            return;
+        }
+        $.ajax({
+            url: siteUrl + 'Pembelian/tampil_data_barang/' + kode_barang,
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(result) {
+                $('#satuan' + col).val(result[0].satuan);
+                $('#harga' + col).val(Currency.format(Number(result[1].harga_beli)));
+                totalcol(col);
+            },
+            error: function(result) {
+                Swal.fire({
+                    title: '501',
+                    text: 'Error Sistem',
+                    icon: 'error'
+                })
+                return;
+            }
+        });
+    }
+
+    function cektotal(col) {
+        var discpr = $('#discpr' + col).val().replaceAll(",", "");
+        if (discpr > 0) {
+            totaldisc(col);
+        } else {
+            totalcol(col);
+        }
+    }
+
+    function totaldisc(col) {
+        var qty = $('#qty' + col).val().replaceAll(",", "");
+        var harga = $('#harga' + col).val().replaceAll(",", "");
+        var discpr = $('#discpr' + col).val().replaceAll(",", "");
+        var rumus = (qty * harga) * (discpr / 100);
+        var rumus2 = (qty * harga) - rumus;
+        $('#qty' + col).val(Currency.format(Number(qty)));
+        $('#discrp' + col).val(Currency.format(Number(rumus)));
+        $('#jumlah' + col).val(Currency.format(Number(rumus2)));
+        totalseluruh();
+    }
+
+    function totalcol(col) {
+        var qty = $('#qty' + col).val().replaceAll(",", "");
+        var harga = $('#harga' + col).val().replaceAll(",", "");
+        var discrp = $('#discrp' + col).val().replaceAll(",", "");
+        var ppnrp = $('#ppnrp' + col).val().replaceAll(",", "");
+        var rumus = qty * harga - discrp;
+        $('#qty' + col).val(Currency.format(Number(qty)));
+        $('#discrp' + col).val(Currency.format(Number(discrp)));
+        $('#discpr' + col).val(Currency.format(Number(0)));
+        $('#jumlah' + col).val(Currency.format(Number(rumus)));
+        totalseluruh();
+    }
+
+    function totalseluruh() {
+        var tabel = document.getElementById('tableBarang');
+        var baris = rows.tabel.length();
+        console.log(baris);
+    }
+
+    Currency = Intl.NumberFormat("en-US", {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 </script>

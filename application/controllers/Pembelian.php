@@ -113,4 +113,12 @@ class Pembelian extends CI_Controller
         ];
         $this->template->load('Template/Content', 'Pembelian/Form_po', $data);
     }
+
+    public function tampil_data_barang($kode_barang)
+    {
+        $kode_unit = $this->session->userdata('kode_unit');
+        $barang = $this->M_central->getDataRow('barang', ['kode' => $kode_barang]);
+        $harga = $this->M_central->getDataRow('harga_unit', ['kode_barang' => $kode_barang, 'kode_unit' => $kode_unit]);
+        echo json_encode(array($barang, $harga));
+    }
 }
