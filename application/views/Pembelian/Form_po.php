@@ -135,7 +135,7 @@
                                     <th rowspan="2" style="width: 10%">Satuan</th>
                                     <th rowspan="2" style="width: 10%">Harga</th>
                                     <th rowspan="2" style="width: 10%">Qty</th>
-                                    <th colspan="2" class="text-center" style="width: 20%">Diskon</th>
+                                    <th colspan="2" class="text-center" style="width: 10%">Diskon</th>
                                     <th rowspan="2" style="width: 5%">PPN</th>
                                     <th rowspan="2" style="width: 10%">Total</th>
                                 </tr>
@@ -267,7 +267,7 @@
                 <input type="text" name="discrp[]" id="discrp${row}" class="form-control text-right" value="0.00" onchange="totalcol(${row})">
             </td>
             <td>
-                <input type="checkbox" name="ppn[]" id="ppn${row}" class="form-control">
+                <input type="checkbox" name="ppn[]" id="ppn${row}" class="form-control" onclick="totalcol('${row}')">
                 <input type="hidden" name="ppnrp[]" id="ppnrp${row}" value="0.00">
             </td>
             <td>
@@ -287,6 +287,7 @@
 
     function reset_detail() {
         $('#table_body').empty();
+        totalseluruh();
         tambah_row();
     }
 
@@ -344,20 +345,66 @@
         var qty = $('#qty' + col).val().replaceAll(",", "");
         var harga = $('#harga' + col).val().replaceAll(",", "");
         var discrp = $('#discrp' + col).val().replaceAll(",", "");
-        var ppnrp = $('#ppnrp' + col).val().replaceAll(",", "");
-        var rumus = qty * harga - discrp;
+        var rumus = (qty * harga) - discrp;
+
+        if (document.getElementById('ppn' + col).checked == true) {
+            var ppnrp = (rumus * (11 / 100));
+        } else {
+            var ppnrp = 0;
+        }
+
         $('#qty' + col).val(Currency.format(Number(qty)));
         $('#discrp' + col).val(Currency.format(Number(discrp)));
         $('#discpr' + col).val(Currency.format(Number(0)));
         $('#jumlah' + col).val(Currency.format(Number(rumus)));
+        $('#ppnrp' + col).val(Currency.format(Number(ppnrp)));
         totalseluruh();
     }
 
     function totalseluruh() {
         var tabel = document.getElementById('tableBarang');
-        var baris = rows.tabel.length();
-        console.log(baris);
+        var tbody = tabel.getElementsByTagName('tbody')[0]; // Assuming you want rows from <tbody>
+        var baris = tbody.rows.length; // Counting rows in <tbody>
+
+        var tsubtotal = 0;
+        var tdiskon = 0;
+        var tppn = 0;
+        var ttotal = 0;
+
+        // Loop through each row in tbody
+        for (var i = 0; i < baris; i++) {
+            var row = tbody.rows[i];
+
+            // Get values from each cell, ensuring proper conversion and defaulting to 0 if empty
+            var harga1 = parseFloat((row.cells[3].children[0].value || '0').replace(/[^0-9\.]+/g, "")) || 0;
+            var qty1 = parseFloat((row.cells[4].children[0].value || '0').replace(/[^0-9\.]+/g, "")) || 0;
+            var discrp1 = parseFloat((row.cells[6].children[0].value || '0').replace(/[^0-9\.]+/g, "")) || 0;
+            var pajak1 = parseFloat((row.cells[7].children[1].value || '0').replace(/[^0-9\.]+/g, "")) || 0;
+            var jumlah1 = parseFloat((row.cells[8].children[0].value || '0').replace(/[^0-9\.]+/g, "")) || 0;
+
+            // Calculate totals
+            tsubtotal += jumlah1 + discrp1;
+            tdiskon += discrp1;
+            ttotal += jumlah1;
+            tppn += pajak1;
+        }
+
+        // Format result as currency
+        function formatCurrency(value) {
+            return value.toLocaleString('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+            });
+        }
+
+        // Display results in formatted currency
+        document.getElementById('subtotal').value = formatCurrency(tsubtotal);
+        document.getElementById('subdiskon').value = formatCurrency(tdiskon);
+        document.getElementById('subppn').value = formatCurrency(tppn);
+        document.getElementById('totalsemua').value = formatCurrency(ttotal + tppn);
     }
+
+
 
     Currency = Intl.NumberFormat("en-US", {
         style: 'decimal',
